@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Bold Red & White Emergency Palette
+  // High-Contrast Red & White Emergency Palette
   static const Color emergencyRed = Color(0xFFDC2626); // Vivid Red
   static const Color criticalRed = Color(0xFF991B1B);  // Deep Crimson Red
   static const Color neonAlert = Color(0xFFEF4444);    // Bright Alert Red
@@ -43,29 +43,33 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: lightCard,
       elevation: 4,
-      shadowColor: emergencyRed.withValues(alpha: 0.15),
+      shadowColor: emergencyRed.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: emergencyRed.withValues(alpha: 0.2), width: 1.2),
+        side: BorderSide(color: emergencyRed.withValues(alpha: 0.3), width: 1.5),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: emergencyRed,
         foregroundColor: Colors.white,
-        elevation: 4,
+        elevation: 6,
+        shadowColor: emergencyRed.withValues(alpha: 0.4),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 0.5),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: emergencyRed,
+        backgroundColor: const Color(0xFFFEF2F2), // Light Red Filled Container
+        foregroundColor: criticalRed,             // Deep Red Text
         side: const BorderSide(color: emergencyRed, width: 2.0),
+        elevation: 3,
+        shadowColor: emergencyRed.withValues(alpha: 0.2),
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, letterSpacing: 0.5),
       ),
     ),
     navigationBarTheme: NavigationBarThemeData(
@@ -96,11 +100,11 @@ class AppTheme {
       fillColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFFECACA), width: 1.5),
+        borderSide: const BorderSide(color: Color(0xFFFCA5A5), width: 1.5),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFFECACA), width: 1.5),
+        borderSide: const BorderSide(color: Color(0xFFFCA5A5), width: 1.5),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),

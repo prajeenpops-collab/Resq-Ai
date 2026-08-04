@@ -274,11 +274,11 @@ class _SosScreenState extends State<SosScreen> with TickerProviderStateMixin {
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const ReportScreen()),
                   ),
-                  icon: const Icon(Icons.record_voice_over_rounded, color: AppTheme.neonAlert),
+                  icon: const Icon(Icons.record_voice_over_rounded, color: AppTheme.emergencyRed),
                   label: const Text('REPORT WITH VOICE / PHOTO / TEXT'),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
 
               // Agency Dispatch SMS Demo Button
               SizedBox(
@@ -288,13 +288,15 @@ class _SosScreenState extends State<SosScreen> with TickerProviderStateMixin {
                     MaterialPageRoute(builder: (_) => const AgencyDispatchDemoScreen()),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.cyberCyan,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    backgroundColor: const Color(0xFF1E1B4B),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    elevation: 4,
                   ),
-                  icon: const Icon(Icons.chat_bubble_rounded, size: 20),
+                  icon: const Icon(Icons.mark_chat_read_rounded, size: 20, color: AppTheme.warningAmber),
                   label: const Text(
                     'AGENCY DISPATCH SMS SIMULATOR',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, letterSpacing: 0.5),
                   ),
                 ),
               ),
