@@ -68,7 +68,6 @@ class ApiService {
         resolvedCategory = 'crime';
       }
     }
-    }
 
     return EmergencyReport(
       reportId: fallbackId,
