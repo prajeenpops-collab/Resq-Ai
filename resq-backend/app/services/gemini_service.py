@@ -9,22 +9,24 @@ logger = logging.getLogger("resq.gemini")
 
 model = genai.GenerativeModel("gemini-2.0-flash")
 
-SYSTEM_PROMPT = """You are ResQ AI, an advanced emergency triage & intelligence assistant. Analyze the emergency input
-(text, transcribed voice, and/or attached image) and respond with ONLY valid JSON, no markdown fences, no preamble, in this exact shape:
+SYSTEM_PROMPT = """You are ResQ AI, an advanced emergency triage & multi-agency intelligence assistant.
+Analyze the emergency input (text, transcribed voice, and/or attached image) and respond with ONLY valid JSON, no markdown fences, no preamble, in this exact shape:
 
 {
   "category": "medical" | "fire" | "accident" | "crime" | "natural_disaster" | "other",
   "severity": "critical" | "high" | "medium" | "low",
-  "rootCause": "<identified primary root cause or origin of the incident, e.g., Electrical Short Circuit, High-Speed Collision, Gas Pipe Rupture, Flash Inundation, Violent Intrusion>",
-  "aiSummary": "<concise 2-sentence dispatcher summary incorporating severity and root cause>",
-  "firstAidGuidance": "<step-by-step numbered safety & first-aid instructions tailored specifically to the root cause and severity>"
+  "rootCause": "<identified primary root cause or origin of the incident, e.g., Structural Electrical Fire, High-Speed Collision, Toxic Gas Leak>",
+  "departmentsToInform": ["<List of emergency agencies to inform, e.g., Fire Department (Suppression Unit), Hospital Trauma ER & ALS Ambulance (Burn Unit), Police (Perimeter Control)>"],
+  "aiSummary": "<concise 2-sentence dispatcher summary incorporating root cause, severity, and agencies alerted>",
+  "firstAidGuidance": "<step-by-step numbered safety & first-aid instructions tailored specifically to the incident and victims>"
 }
 
-Severity Classification Guide:
-- critical: Immediate life-threatening emergency (unconscious victim, active structural fire with trapped occupants, severe arterial hemorrhage, active shooter)
-- high: Serious emergency requiring rapid response (fractures, heavy smoke, multi-vehicle collision, active burglary)
-- medium: Non-life-threatening incident (minor injury, contained small fire, past theft)
-- low: Non-urgent inquiry or minor property issue
+Agency Selection Rules:
+- If category is "fire": ALWAYS include "Fire Department (Suppression & Ladder Unit)". If casualties, burns, or smoke inhalation are mentioned/implied, ALWAYS include "Hospital Trauma ER & ALS Ambulance (Burn Unit)".
+- If category is "medical": Include "Hospital Trauma ER" and "ALS Mobile ICU Ambulance".
+- If category is "accident": Include "Fire Department (Extrication Rescue)", "ALS Ambulance", and "Traffic Police Patrol".
+- If category is "natural_disaster": Include "Disaster Water Rescue Squad", "Fire Department", and "Emergency Management Agency".
+- If category is "crime": Include "Police Tactical Patrol (SWAT)" and "Trauma Paramedics".
 """
 
 
@@ -34,7 +36,7 @@ async def analyze_emergency(
     image_mime: str | None = None,
 ) -> dict:
     """
-    Sends the report content to Gemini AI to extract category, severity, root cause, summary, and guidance.
+    Sends the report content to Gemini AI to extract category, severity, root cause, departmentsToInform, summary, and guidance.
     """
     parts = [SYSTEM_PROMPT]
 
@@ -43,7 +45,7 @@ async def analyze_emergency(
 
     if image_bytes:
         parts.append({"mime_type": image_mime or "image/jpeg", "data": image_bytes})
-        parts.append("\nAnalyze the attached image to identify the root cause and severity of the emergency.")
+        parts.append("\nAnalyze the attached image to identify the root cause, severity, and required emergency departments.")
 
     try:
         response = model.generate_content(parts)
@@ -55,34 +57,34 @@ async def analyze_emergency(
 
         result = json.loads(raw)
 
-        required_keys = {"category", "severity", "rootCause", "aiSummary", "firstAidGuidance"}
-        if not required_keys.issubset(result.keys()):
-            # Fill missing rootCause defensively
-            if "rootCause" not in result:
-                result["rootCause"] = _infer_root_cause(raw_text or "", result.get("category", "other"))
-            if "category" not in result:
-                result["category"] = "other"
-            if "severity" not in result:
-                result["severity"] = "high"
+        if "departmentsToInform" not in result or not result["departmentsToInform"]:
+            result["departmentsToInform"] = _infer_departments(result.get("category", "fire"), raw_text or "")
+
+        if "rootCause" not in result:
+            result["rootCause"] = _infer_root_cause(raw_text or "", result.get("category", "fire"))
 
         return result
 
     except (json.JSONDecodeError, ValueError) as e:
         logger.error(f"Gemini output parse failure: {e}")
+        cat = _infer_category(raw_text or "")
         return {
-            "category": _infer_category(raw_text or ""),
+            "category": cat,
             "severity": _infer_severity(raw_text or ""),
-            "rootCause": _infer_root_cause(raw_text or "", "other"),
-            "aiSummary": raw_text or "Emergency report received. Responders alerted.",
-            "firstAidGuidance": "1. Stay in a safe area.\n2. Do not re-enter hazard zone.\n3. Await emergency responders.",
+            "rootCause": _infer_root_cause(raw_text or "", cat),
+            "departmentsToInform": _infer_departments(cat, raw_text or ""),
+            "aiSummary": raw_text or "Emergency report received. Fire Department & Hospital alerted.",
+            "firstAidGuidance": "1. Stay in a safe area upwind.\n2. Do not re-enter building.\n3. Await Fire Rescue and Ambulance.",
         }
     except Exception as e:
         logger.error(f"Gemini API call failed: {e}")
+        cat = _infer_category(raw_text or "")
         return {
-            "category": _infer_category(raw_text or ""),
+            "category": cat,
             "severity": _infer_severity(raw_text or ""),
-            "rootCause": _infer_root_cause(raw_text or "", "other"),
-            "aiSummary": raw_text or "Emergency report logged. Response team dispatched.",
+            "rootCause": _infer_root_cause(raw_text or "", cat),
+            "departmentsToInform": _infer_departments(cat, raw_text or ""),
+            "aiSummary": raw_text or "Emergency report logged. Fire & Paramedics dispatched.",
             "firstAidGuidance": "1. Keep emergency line open.\n2. Follow safety instructions from responders.",
         }
 
@@ -97,8 +99,6 @@ def _infer_category(text: str) -> str:
         return "natural_disaster"
     if any(k in t for k in ["gun", "shot", "thief", "attack", "robbery", "weapon"]):
         return "crime"
-    if any(k in t for k in ["chemical", "gas", "leak", "fumes", "toxic", "poison"]):
-        return "other"
     return "medical"
 
 
@@ -106,30 +106,48 @@ def _infer_severity(text: str) -> str:
     t = text.lower()
     if any(k in t for k in ["unconscious", "trapped", "bleeding", "explosion", "critical", "dying", "flame"]):
         return "critical"
-    if any(k in t for k in ["crash", "fire", "injury", "broken", "severe"]):
-        return "high"
-    return "medium"
+    return "high"
 
 
 def _infer_root_cause(text: str, category: str) -> str:
     t = text.lower()
-    if "electrical" in t or "wire" in t or "short" in t:
-        return "Electrical Circuit Malfunction"
+    if "electrical" in t or "wire" in t:
+        return "Electrical Circuit Ignition"
     if "gas" in t or "leak" in t:
         return "Pressurized Gas Line Rupture"
-    if "speed" in t or "brake" in t or "skid" in t:
-        return "High-Speed Vehicle Loss of Control"
-    if "water" in t or "flood" in t:
-        return "Heavy Precipitation Flash Inundation"
+    if category == "fire":
+        return "Structural Thermal Ignition & Smoke Hazard"
+    return "Acute Emergency Incident"
 
-    defaults = {
-        "fire": "Thermal Ignition / Electrical Spark",
-        "accident": "Impact Kinetic Collision",
-        "natural_disaster": "Severe Weather Disruption",
-        "crime": "Unlawful Security Breach",
-        "other": "Hazard Material Exposure",
-    }
-    return defaults.get(category, "Acute Medical Distress")
+
+def _infer_departments(category: str, text: str) -> list[str]:
+    if category == "fire":
+        return [
+            "Fire Department (Suppression & Ladder Unit)",
+            "Hospital Trauma ER & ALS Ambulance (Burn Unit)",
+            "Police Patrol (Perimeter Security)",
+        ]
+    if category == "accident":
+        return [
+            "Fire Rescue (Extrication Unit)",
+            "ALS Mobile ICU Ambulance",
+            "Traffic Police Patrol",
+        ]
+    if category == "natural_disaster":
+        return [
+            "Disaster Water Rescue Squad",
+            "Fire Department Emergency Unit",
+            "Municipal Emergency Management",
+        ]
+    if category == "crime":
+        return [
+            "Police Tactical Unit (SWAT)",
+            "Trauma Ambulance Paramedics",
+        ]
+    return [
+        "Hospital Trauma ER Bay",
+        "ALS Mobile ICU Ambulance",
+    ]
 
 
 async def transcribe_audio(audio_bytes: bytes, mime_type: str = "audio/mp3") -> str:

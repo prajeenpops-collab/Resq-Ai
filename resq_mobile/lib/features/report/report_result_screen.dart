@@ -86,6 +86,54 @@ class ReportResultScreen extends StatelessWidget {
                 const SizedBox(height: 20),
               ],
 
+              // Emergency Departments Alerted Card
+              if (report.departmentsToInform.isNotEmpty) ...[
+                const Text('Emergency Departments Notified', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppTheme.emergencyRed.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppTheme.emergencyRed.withValues(alpha: 0.4)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(Icons.notifications_active_rounded, color: AppTheme.emergencyRed, size: 22),
+                          SizedBox(width: 8),
+                          Text(
+                            'AUTOMATED MULTI-AGENCY ALERT BROADCAST',
+                            style: TextStyle(color: AppTheme.emergencyRed, fontWeight: FontWeight.bold, fontSize: 11),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      ...report.departmentsToInform.map(
+                        (dept) => Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.check_circle_rounded, color: AppTheme.safeGreen, size: 16),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  dept,
+                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+
               const Text('AI Situation Summary', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
               const SizedBox(height: 8),
               Container(

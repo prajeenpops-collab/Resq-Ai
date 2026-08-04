@@ -3,6 +3,7 @@ class EmergencyReport {
   final String category;
   final String severity;
   final String? rootCause;
+  final List<String> departmentsToInform;
   final String aiSummary;
   final String firstAidGuidance;
   final String status;
@@ -13,6 +14,7 @@ class EmergencyReport {
     required this.category,
     required this.severity,
     this.rootCause,
+    this.departmentsToInform = const [],
     required this.aiSummary,
     required this.firstAidGuidance,
     required this.status,
@@ -20,11 +22,17 @@ class EmergencyReport {
   });
 
   factory EmergencyReport.fromJson(Map<String, dynamic> json) {
+    List<String> depts = [];
+    if (json['departmentsToInform'] != null) {
+      depts = List<String>.from(json['departmentsToInform']);
+    }
+
     return EmergencyReport(
       reportId: json['reportId'] ?? '',
       category: json['category'] ?? 'other',
       severity: json['severity'] ?? 'low',
       rootCause: json['rootCause'],
+      departmentsToInform: depts,
       aiSummary: json['aiSummary'] ?? '',
       firstAidGuidance: json['firstAidGuidance'] ?? '',
       status: json['status'] ?? 'pending',
