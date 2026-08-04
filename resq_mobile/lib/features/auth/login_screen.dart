@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme.dart';
 import '../../services/auth_service.dart';
 import 'register_screen.dart';
@@ -18,15 +19,49 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _loading = false;
   String? _error;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedEmail();
+  }
+
+  Future<void> _loadSavedEmail() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedEmail = prefs.getString('last_saved_email');
+      if (savedEmail != null && savedEmail.isNotEmpty && mounted) {
+        setState(() {
+          _emailController.text = savedEmail;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading saved email: $e');
+    }
+  }
+
+  Future<void> _saveEmail(String email) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('last_saved_email', email);
+    } catch (e) {
+      debugPrint('Error saving email: $e');
+    }
+  }
+
   Future<void> _login() async {
-    if (_emailController.text.trim().isEmpty || _passwordController.text.isEmpty) {
+    final email = _emailController.text.trim();
+    if (email.isEmpty || _passwordController.text.isEmpty) {
       setState(() => _error = 'Please enter your email and password.');
       return;
     }
     setState(() { _loading = true; _error = null; });
+
+    // Save email for future sign-ins
+    await _saveEmail(email);
+
     try {
       await _authService.signIn(
-        email: _emailController.text.trim(),
+        email: email,
         password: _passwordController.text,
       );
     } catch (e) {
@@ -66,33 +101,31 @@ class _LoginScreenState extends State<LoginScreen> {
               const Text(
                 'ResQ AI',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: 1.5),
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.w900, color: AppTheme.emergencyRed, letterSpacing: 1.5),
               ),
               const SizedBox(height: 6),
               const Text(
                 'Automated Emergency Triage & Protocol Platform',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                style: TextStyle(color: Color(0xFF64748B), fontSize: 13),
               ),
               const SizedBox(height: 48),
 
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   hintText: 'Email Address',
-                  prefixIcon: Icon(Icons.email_rounded, color: AppTheme.cyberCyan),
+                  prefixIcon: Icon(Icons.email_rounded, color: AppTheme.emergencyRed),
                 ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _passwordController,
                 obscureText: true,
-                style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   hintText: 'Password',
-                  prefixIcon: Icon(Icons.lock_rounded, color: AppTheme.cyberCyan),
+                  prefixIcon: Icon(Icons.lock_rounded, color: AppTheme.emergencyRed),
                 ),
               ),
               if (_error != null) ...[
@@ -116,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const RegisterScreen()),
                 ),
-                child: const Text("Don't have an account? Register Citizen ID", style: TextStyle(color: AppTheme.cyberCyan)),
+                child: const Text("Don't have an account? Register Citizen ID", style: TextStyle(color: AppTheme.emergencyRed, fontWeight: FontWeight.bold)),
               ),
             ],
           ),

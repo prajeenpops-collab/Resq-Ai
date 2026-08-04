@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/auth_service.dart';
 import '../sos/sos_screen.dart';
 
@@ -18,11 +19,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _loading = false;
   String? _error;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedEmail();
+  }
+
+  Future<void> _loadSavedEmail() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedEmail = prefs.getString('last_saved_email');
+      if (savedEmail != null && savedEmail.isNotEmpty && mounted) {
+        setState(() {
+          _emailController.text = savedEmail;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading saved email: $e');
+    }
+  }
+
+  Future<void> _saveEmail(String email) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('last_saved_email', email);
+    } catch (e) {
+      debugPrint('Error saving email: $e');
+    }
+  }
+
   Future<void> _register() async {
+    final email = _emailController.text.trim();
+    if (email.isNotEmpty) {
+      await _saveEmail(email);
+    }
+
     setState(() { _loading = true; _error = null; });
     try {
       await _authService.signUp(
-        email: _emailController.text.trim(),
+        email: email,
         password: _passwordController.text,
         name: _nameController.text.trim(),
         phone: _phoneController.text.trim(),
