@@ -79,16 +79,14 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('EMERGENCY PROTOCOLS'),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppTheme.neonAlert,
-          labelColor: AppTheme.neonAlert,
-          unselectedLabelColor: const Color(0xFF94A3B8),
+          indicatorColor: Colors.white,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
           tabs: const [
             Tab(icon: Icon(Icons.shield_rounded), text: 'Standard Protocols'),
             Tab(icon: Icon(Icons.auto_awesome_rounded), text: 'AI Generator'),
@@ -100,7 +98,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
         children: [
           // Tab 1: Standard Protocols Catalog
           _loading
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator(color: AppTheme.emergencyRed))
               : RefreshIndicator(
                   onRefresh: _loadProtocols,
                   child: ListView.builder(
@@ -122,9 +120,9 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppTheme.cyberCyan.withValues(alpha: 0.15),
+                    color: AppTheme.cyberCyan.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppTheme.cyberCyan.withValues(alpha: 0.3)),
+                    border: Border.all(color: AppTheme.cyberCyan, width: 1.5),
                   ),
                   child: const Row(
                     children: [
@@ -133,7 +131,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
                       Expanded(
                         child: Text(
                           'Powered by Gemini AI Triage. Describe any unique emergency to generate real-time protocols.',
-                          style: TextStyle(color: Colors.white, fontSize: 13),
+                          style: TextStyle(color: Color(0xFF1E293B), fontWeight: FontWeight.bold, fontSize: 13),
                         ),
                       ),
                     ],
@@ -141,56 +139,43 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
                 ),
                 const SizedBox(height: 20),
 
-                // Inputs
-                const Text('Emergency Description', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text('Select Category & Severity', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF111827))),
                 const SizedBox(height: 8),
-                TextField(
-                  controller: _customPromptController,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    hintText: 'e.g. Chemical smell in underground subway platform with multiple people coughing...',
-                  ),
-                ),
-                const SizedBox(height: 16),
-
                 Row(
                   children: [
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Category', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                          const SizedBox(height: 6),
-                          DropdownButtonFormField<String>(
-                            value: _selectedCategory,
-                            decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
-                            items: ['medical', 'fire', 'accident', 'natural_disaster', 'crime', 'other']
-                                .map((c) => DropdownMenuItem(value: c, child: Text(c.toUpperCase())))
-                                .toList(),
-                            onChanged: (val) => setState(() => _selectedCategory = val!),
-                          ),
-                        ],
+                      child: DropdownButtonFormField<String>(
+                        initialValue: _selectedCategory,
+                        items: ['medical', 'fire', 'accident', 'natural_disaster', 'crime', 'other']
+                            .map((c) => DropdownMenuItem(value: c, child: Text(c.toUpperCase(), style: const TextStyle(color: Color(0xFF111827)))))
+                            .toList(),
+                        onChanged: (v) => setState(() => _selectedCategory = v!),
+                        decoration: const InputDecoration(labelText: 'Category'),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Severity', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                          const SizedBox(height: 6),
-                          DropdownButtonFormField<String>(
-                            value: _selectedSeverity,
-                            decoration: const InputDecoration(contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
-                            items: ['critical', 'high', 'medium', 'low']
-                                .map((s) => DropdownMenuItem(value: s, child: Text(s.toUpperCase())))
-                                .toList(),
-                            onChanged: (val) => setState(() => _selectedSeverity = val!),
-                          ),
-                        ],
+                      child: DropdownButtonFormField<String>(
+                        initialValue: _selectedSeverity,
+                        items: ['critical', 'high', 'medium', 'low']
+                            .map((s) => DropdownMenuItem(value: s, child: Text(s.toUpperCase(), style: const TextStyle(color: Color(0xFF111827)))))
+                            .toList(),
+                        onChanged: (v) => setState(() => _selectedSeverity = v!),
+                        decoration: const InputDecoration(labelText: 'Severity'),
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 16),
+
+                TextField(
+                  controller: _customPromptController,
+                  maxLines: 4,
+                  style: const TextStyle(color: Color(0xFF111827), fontWeight: FontWeight.w600),
+                  decoration: const InputDecoration(
+                    labelText: 'Describe Emergency Incident Parameters',
+                    hintText: 'e.g., Structural collapse near highway bridge with chemical spill...',
+                  ),
                 ),
                 const SizedBox(height: 20),
 
@@ -201,13 +186,13 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
                     icon: _generatingAi
                         ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                         : const Icon(Icons.auto_awesome_rounded),
-                    label: Text(_generatingAi ? 'GENERATING PROTOCOL...' : 'GENERATE AI RESPONSE PROTOCOL'),
+                    label: Text(_generatingAi ? 'GEMINI AI GENERATING PROTOCOL...' : 'GENERATE AI EMERGENCY PROTOCOL'),
                   ),
                 ),
 
                 if (_aiGeneratedProtocol != null) ...[
-                  const SizedBox(height: 28),
-                  Text('GENERATED AI PROTOCOL', style: theme.textTheme.labelMedium?.copyWith(color: AppTheme.cyberCyan, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 24),
+                  const Text('AI Generated Protocol Result', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF111827))),
                   const SizedBox(height: 12),
                   _buildProtocolCard(context, _aiGeneratedProtocol!),
                 ],
@@ -220,17 +205,17 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
   }
 
   Widget _buildProtocolCard(BuildContext context, EmergencyProtocol p) {
-    Color sevColor = AppTheme.severityColor(p.severityTarget);
+    final sevColor = AppTheme.severityColor(p.severityTarget);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppTheme.darkCard,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF334155)),
+        border: Border.all(color: sevColor.withValues(alpha: 0.4), width: 1.5),
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
       ),
       child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
@@ -241,27 +226,27 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
         ),
         title: Text(
           p.title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+          style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFF111827)),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: sevColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   p.severityTarget.toUpperCase(),
-                  style: TextStyle(color: sevColor, fontWeight: FontWeight.bold, fontSize: 10),
+                  style: TextStyle(color: sevColor, fontWeight: FontWeight.w900, fontSize: 10),
                 ),
               ),
               const SizedBox(width: 8),
               Text(
                 '${p.automatedSteps.length} Automated Steps',
-                style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                style: const TextStyle(color: Color(0xFF64748B), fontSize: 12, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -272,25 +257,25 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Divider(color: Color(0xFF334155)),
-                Text(p.summary, style: const TextStyle(color: Color(0xFFCBD5E1), fontSize: 13)),
+                const Divider(color: Color(0xFFE2E8F0)),
+                Text(p.summary, style: const TextStyle(color: Color(0xFF334155), fontSize: 13, height: 1.3)),
                 const SizedBox(height: 14),
 
-                const Text('Automated Workflow Sequence:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
+                const Text('Automated Workflow Sequence:', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Color(0xFF111827))),
                 const SizedBox(height: 8),
                 ...p.automatedSteps.map((step) => Padding(
                       padding: const EdgeInsets.only(bottom: 6),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.play_arrow_rounded, color: AppTheme.neonAlert, size: 16),
+                          const Icon(Icons.play_arrow_rounded, color: AppTheme.emergencyRed, size: 16),
                           const SizedBox(width: 6),
                           Expanded(
                             child: RichText(
                               text: TextSpan(
                                 children: [
-                                  TextSpan(text: '${step.title}: ', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12)),
-                                  TextSpan(text: step.description, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12)),
+                                  TextSpan(text: '${step.title}: ', style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF111827), fontSize: 12)),
+                                  TextSpan(text: step.description, style: const TextStyle(color: Color(0xFF475569), fontSize: 12)),
                                 ],
                               ),
                             ),
@@ -300,7 +285,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
                     )),
                 const SizedBox(height: 14),
 
-                const Text('Citizen Safety Checklist:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
+                const Text('Citizen Safety Checklist:', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Color(0xFF111827))),
                 const SizedBox(height: 8),
                 ...p.safetyChecklist.map((item) => Padding(
                       padding: const EdgeInsets.only(bottom: 4),
@@ -310,7 +295,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
                           const Icon(Icons.check_circle_outline_rounded, color: AppTheme.safeGreen, size: 16),
                           const SizedBox(width: 6),
                           Expanded(
-                            child: Text(item, style: const TextStyle(color: Color(0xFFCBD5E1), fontSize: 12)),
+                            child: Text(item, style: const TextStyle(color: Color(0xFF334155), fontWeight: FontWeight.w600, fontSize: 12)),
                           ),
                         ],
                       ),
@@ -322,7 +307,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
                   child: ElevatedButton.icon(
                     onPressed: () => _triggerProtocolNow(p),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.neonAlert,
+                      backgroundColor: AppTheme.emergencyRed,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     icon: const Icon(Icons.bolt_rounded, size: 20),
@@ -344,7 +329,7 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Triggering ${p.title}...'),
-        backgroundColor: AppTheme.neonAlert,
+        backgroundColor: AppTheme.emergencyRed,
         duration: const Duration(seconds: 1),
       ),
     );

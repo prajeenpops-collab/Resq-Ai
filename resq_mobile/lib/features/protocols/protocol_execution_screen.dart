@@ -302,14 +302,14 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
             _execution!.title,
             style: const TextStyle(
               fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF111827),
             ),
           ),
           const SizedBox(height: 6),
           Text(
             'Report ID: ${_execution!.reportId.substring(0, _execution!.reportId.length > 8 ? 8 : _execution!.reportId.length)} • Auto-Trigger Active',
-            style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+            style: const TextStyle(color: Color(0xFF475569), fontSize: 13, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -322,7 +322,7 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
       decoration: BoxDecoration(
         color: AppTheme.safeGreen.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.safeGreen.withValues(alpha: 0.4)),
+        border: Border.all(color: AppTheme.safeGreen.withValues(alpha: 0.5)),
       ),
       child: const Row(
         children: [
@@ -335,7 +335,7 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
                 Text(
                   'Emergency Contacts & First Responders Notified',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Color(0xFF065F46),
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -343,7 +343,7 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
                 SizedBox(height: 2),
                 Text(
                   'Automated SMS beacon sent with live GPS tracking.',
-                  style: TextStyle(color: Color(0xFFCBD5E1), fontSize: 11),
+                  style: TextStyle(color: Color(0xFF047857), fontSize: 11, fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -395,11 +395,11 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
                   children: [
                     Text(
                       'APPROACHING: ${primaryUnit.unitClass.toUpperCase()}',
-                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13),
+                      style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF111827), fontSize: 13),
                     ),
                     Text(
                       'GPS Distance: ${distanceKm.toStringAsFixed(1)} km away • Speed: 58 km/h',
-                      style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+                      style: const TextStyle(color: Color(0xFF475569), fontSize: 11, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -542,12 +542,12 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13),
+                  style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF111827), fontSize: 13),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   description,
-                  style: const TextStyle(color: Color(0xFFCBD5E1), fontSize: 11),
+                  style: const TextStyle(color: Color(0xFF475569), fontSize: 11, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -588,7 +588,7 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
       decoration: BoxDecoration(
         color: AppTheme.darkCard,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFF334155)),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: Row(
         children: [
@@ -608,15 +608,15 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
                 Text(
                   unit.unitClass,
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w900,
                     fontSize: 15,
-                    color: Colors.white,
+                    color: Color(0xFF111827),
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   'Unit: ${unit.unitId} • ${unit.driverName}',
-                  style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                  style: const TextStyle(color: Color(0xFF475569), fontSize: 12, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -734,9 +734,9 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
                             child: Text(
                               step.title,
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w900,
                                 fontSize: 15,
-                                color: isDone || isCurrent ? Colors.white : const Color(0xFF94A3B8),
+                                color: isDone || isCurrent ? const Color(0xFF111827) : const Color(0xFF64748B),
                               ),
                             ),
                           ),
@@ -744,13 +744,13 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
-                                color: AppTheme.neonAlert.withValues(alpha: 0.2),
+                                color: AppTheme.emergencyRed.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: const Text(
                                 'ACTIVE',
                                 style: TextStyle(
-                                  color: AppTheme.neonAlert,
+                                  color: AppTheme.emergencyRed,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 10,
                                 ),
@@ -761,7 +761,7 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
                       const SizedBox(height: 4),
                       Text(
                         step.description,
-                        style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                        style: const TextStyle(color: Color(0xFF475569), fontSize: 12, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
@@ -780,9 +780,9 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.darkCard,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF334155)),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: Column(
         children: checklist.asMap().entries.map((entry) {
@@ -808,7 +808,8 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
               text,
               style: TextStyle(
                 fontSize: 14,
-                color: isChecked ? const Color(0xFF64748B) : Colors.white,
+                fontWeight: FontWeight.w600,
+                color: isChecked ? const Color(0xFF94A3B8) : const Color(0xFF111827),
                 decoration: isChecked ? TextDecoration.lineThrough : null,
               ),
             ),
