@@ -49,6 +49,43 @@ class ReportResultScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
+              // AI Identified Root Cause Card
+              if (report.rootCause != null && report.rootCause!.isNotEmpty) ...[
+                const Text('AI Identified Root Cause', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppTheme.warningAmber.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppTheme.warningAmber.withValues(alpha: 0.4)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.search_rounded, color: AppTheme.warningAmber, size: 24),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'ORIGIN / ROOT CAUSE',
+                              style: TextStyle(color: AppTheme.warningAmber, fontWeight: FontWeight.bold, fontSize: 11),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              report.rootCause!,
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+
               const Text('AI Situation Summary', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
               const SizedBox(height: 8),
               Container(

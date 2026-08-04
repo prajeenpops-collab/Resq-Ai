@@ -31,6 +31,7 @@ class EmergencyReportResponse(BaseModel):
     reportId: str
     category: str
     severity: str
+    rootCause: Optional[str] = None
     aiSummary: str
     firstAidGuidance: str
     status: str
@@ -52,6 +53,7 @@ class EmergencyReportFull(BaseModel):
     aiSummary: str
     category: str
     severity: str
+    rootCause: Optional[str] = None
     location: Location
     address: Optional[str]
     status: str

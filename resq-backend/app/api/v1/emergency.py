@@ -51,6 +51,7 @@ async def submit_report(payload: EmergencyReportCreate, user: dict = Depends(get
         "aiSummary": ai_result["aiSummary"],
         "category": resolved_category,
         "severity": ai_result["severity"],
+        "rootCause": ai_result.get("rootCause", "Unspecified Emergency Factor"),
         "firstAidGuidance": ai_result["firstAidGuidance"],
     })
 
@@ -72,6 +73,7 @@ async def submit_report(payload: EmergencyReportCreate, user: dict = Depends(get
         reportId=report_id,
         category=report["category"],
         severity=report["severity"],
+        rootCause=report.get("rootCause", "Unspecified Emergency Factor"),
         aiSummary=report["aiSummary"],
         firstAidGuidance=report["firstAidGuidance"],
         status=report["status"],
