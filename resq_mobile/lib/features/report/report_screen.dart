@@ -178,7 +178,7 @@ class _ReportScreenState extends State<ReportScreen> {
             TextField(
               controller: _textController,
               maxLines: 5,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Color(0xFF111827), fontWeight: FontWeight.w600),
               decoration: const InputDecoration(
                 hintText: 'Describe the emergency (e.g. Severe car crash on 5th main street with injury...)',
               ),

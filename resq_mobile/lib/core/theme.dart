@@ -86,6 +86,11 @@ class AppTheme {
         return const IconThemeData(color: Color(0xFF6B7280), size: 24);
       }),
     ),
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: Color(0xFF111827)),
+      bodyMedium: TextStyle(color: Color(0xFF1F2937)),
+      titleMedium: TextStyle(color: Color(0xFF111827)),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white,
@@ -103,6 +108,7 @@ class AppTheme {
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
+      labelStyle: const TextStyle(color: Color(0xFF374151)),
     ),
   );
 
