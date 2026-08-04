@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ResQ AI — Emergency Command Center & Automated Protocol Hub</title>
+  <title>ResQ AI — Multi-Agency Department Emergency Dashboards</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -13,11 +13,11 @@
       --panel-bg: rgba(18, 25, 41, 0.75);
       --card-bg: rgba(28, 38, 61, 0.85);
       --border-color: rgba(255, 255, 255, 0.08);
-      --accent-red: #ff3b30;
-      --accent-coral: #ff5252;
+      --accent-red: #dc2626;
+      --accent-coral: #ef4444;
       --accent-amber: #f59e0b;
       --accent-green: #10b981;
-      --accent-cyan: #06b6d4;
+      --accent-cyan: #2563eb;
       --accent-purple: #a855f7;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
@@ -33,8 +33,8 @@
     body {
       background-color: var(--bg-dark);
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(255, 59, 48, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+        radial-gradient(circle at 15% 15%, rgba(220, 38, 38, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(37, 99, 235, 0.08) 0%, transparent 40%);
       color: var(--text-main);
       min-height: 100vh;
       overflow-x: hidden;
@@ -42,7 +42,7 @@
 
     /* Navigation Bar */
     header {
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-color);
       padding: 14px 28px;
@@ -63,12 +63,12 @@
     .brand-logo {
       width: 38px;
       height: 38px;
-      background: linear-gradient(135deg, var(--accent-red), #b91c1c);
+      background: linear-gradient(135deg, var(--accent-red), #991b1b);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px rgba(255, 59, 48, 0.4);
+      box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
     }
 
     .brand-logo svg {
@@ -88,16 +88,52 @@
 
     .brand-text p {
       font-size: 11px;
-      color: var(--accent-cyan);
+      color: var(--accent-amber);
       font-weight: 600;
       letter-spacing: 1px;
       text-transform: uppercase;
     }
 
+    /* Department Filter Tabs Bar */
+    .agency-tabs {
+      display: flex;
+      gap: 10px;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+    }
+
+    .agency-tab {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .agency-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .agency-tab.active-all { background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); }
+    .agency-tab.active-fire { background: rgba(220, 38, 38, 0.25); color: #ef4444; border: 1px solid var(--accent-red); }
+    .agency-tab.active-hospital { background: rgba(16, 185, 129, 0.25); color: #10b981; border: 1px solid var(--accent-green); }
+    .agency-tab.active-ambulance { background: rgba(245, 158, 11, 0.25); color: #f59e0b; border: 1px solid var(--accent-amber); }
+    .agency-tab.active-police { background: rgba(37, 99, 235, 0.25); color: #60a5fa; border: 1px solid var(--accent-cyan); }
+
     .status-bar {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 16px;
     }
 
     .status-badge {
@@ -130,7 +166,7 @@
 
     .clock {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-muted);
     }
@@ -138,7 +174,7 @@
     /* Main Dashboard Layout */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: 340px 1fr 380px;
+      grid-template-columns: 360px 1fr 380px;
       gap: 20px;
       padding: 24px;
       height: calc(100vh - 72px);
@@ -196,7 +232,7 @@
 
     .incident-card.active {
       border-color: var(--accent-coral);
-      background: rgba(255, 82, 82, 0.1);
+      background: rgba(239, 68, 68, 0.12);
     }
 
     .incident-severity {
@@ -209,9 +245,9 @@
       letter-spacing: 0.5px;
     }
 
-    .sev-critical { background: rgba(255, 59, 48, 0.25); color: #ff6b6b; border: 1px solid var(--accent-red); }
+    .sev-critical { background: rgba(220, 38, 38, 0.25); color: #fca5a5; border: 1px solid var(--accent-red); }
     .sev-high { background: rgba(245, 158, 11, 0.25); color: #facc15; border: 1px solid var(--accent-amber); }
-    .sev-medium { background: rgba(6, 182, 212, 0.25); color: #38bdf8; border: 1px solid var(--accent-cyan); }
+    .sev-medium { background: rgba(37, 99, 235, 0.25); color: #93c5fd; border: 1px solid var(--accent-cyan); }
 
     .incident-title {
       font-size: 15px;
@@ -224,10 +260,17 @@
       font-size: 12px;
       color: var(--text-muted);
       line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    }
+
+    .dept-pill {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.08);
+      color: #cbd5e1;
     }
 
     /* Radar Map View */
@@ -235,7 +278,7 @@
       background: rgba(10, 15, 28, 0.9);
       border: 1px solid var(--border-color);
       border-radius: 20px;
-      height: 320px;
+      height: 280px;
       position: relative;
       overflow: hidden;
       display: flex;
@@ -255,10 +298,10 @@
 
     .radar-sweep {
       position: absolute;
-      width: 280px;
-      height: 280px;
+      width: 240px;
+      height: 240px;
       border-radius: 50%;
-      border: 1px solid rgba(6, 182, 212, 0.2);
+      border: 1px solid rgba(220, 38, 38, 0.3);
     }
 
     .radar-sweep::after {
@@ -267,7 +310,7 @@
       top: 0; left: 0; right: 0; bottom: 0;
       border-radius: 50%;
       border: 2px solid transparent;
-      border-top-color: var(--accent-cyan);
+      border-top-color: var(--accent-red);
       animation: spin 4s linear infinite;
     }
 
@@ -316,7 +359,7 @@
     }
 
     .step-done { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
-    .step-active { background: rgba(255, 82, 82, 0.2); color: var(--accent-coral); border: 1px solid var(--accent-coral); }
+    .step-active { background: rgba(239, 68, 68, 0.2); color: var(--accent-coral); border: 1px solid var(--accent-coral); }
     .step-pending { background: rgba(148, 163, 184, 0.1); color: var(--text-muted); border: 1px solid var(--border-color); }
 
     .step-info h4 {
@@ -331,9 +374,37 @@
       margin-top: 2px;
     }
 
+    /* Agency Fleet Status Counters */
+    .fleet-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .fleet-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .fleet-num {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--accent-green);
+    }
+
+    .fleet-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
     /* Controls & Buttons */
     .btn {
-      background: linear-gradient(135deg, var(--accent-red), #c53030);
+      background: linear-gradient(135deg, var(--accent-red), #991b1b);
       color: white;
       border: none;
       border-radius: 14px;
@@ -347,12 +418,12 @@
       justify-content: center;
       gap: 8px;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
     }
 
     .btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(255, 59, 48, 0.45);
+      box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45);
     }
 
     .btn-secondary {
@@ -375,30 +446,35 @@
       font-size: 13px;
       outline: none;
     }
-
-    textarea:focus, select:focus {
-      border-color: var(--accent-cyan);
-    }
   </style>
 </head>
 <body>
 
-  <!-- Top Header -->
+  <!-- Top Header with Department Selector -->
   <header>
     <div class="brand">
       <div class="brand-logo">
         <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
       </div>
       <div class="brand-text">
-        <h1>ResQ AI Command Center</h1>
-        <p>Automated Emergency Triage & Protocols</p>
+        <h1 id="headerTitle">ResQ AI Emergency Command Center</h1>
+        <p id="headerSubtitle">MULTI-AGENCY REAL-TIME INCIDENT PORTALS</p>
       </div>
+    </div>
+
+    <!-- Agency Filter Tabs -->
+    <div class="agency-tabs">
+      <button class="agency-tab active-all" id="tab-all" onclick="filterDepartment('all')">🌐 ALL INCIDENTS</button>
+      <button class="agency-tab" id="tab-fire" onclick="filterDepartment('fire')">🚒 FIRE SERVICE</button>
+      <button class="agency-tab" id="tab-hospital" onclick="filterDepartment('hospital')">🏥 HOSPITAL ER</button>
+      <button class="agency-tab" id="tab-ambulance" onclick="filterDepartment('ambulance')">🚑 AMBULANCE</button>
+      <button class="agency-tab" id="tab-police" onclick="filterDepartment('police')">🚓 POLICE COMMAND</button>
     </div>
 
     <div class="status-bar">
       <div class="status-badge">
         <span class="status-dot"></span>
-        AUTOMATED PROTOCOL ENGINE ONLINE
+        <span id="agencyEngineStatus">ALL DISPATCH ENGINES ONLINE</span>
       </div>
       <div class="clock" id="liveClock">00:00:00 UTC</div>
     </div>
@@ -407,53 +483,78 @@
   <!-- 3-Column Tactical Command Grid -->
   <main class="dashboard-grid">
 
-    <!-- Left Column: Active Incidents Feed -->
+    <!-- Left Column: Active Incidents / Complaints Feed -->
     <section class="panel">
       <div class="panel-header">
         <div class="panel-title">
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-          ACTIVE INCIDENTS FEED
+          <span id="feedHeaderLabel">INCIDENT COMPLAINTS FEED</span>
         </div>
-        <span style="font-size: 12px; font-weight: 700; color: var(--accent-cyan);" id="incidentCount">3 Active</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--accent-amber);" id="incidentCount">4 Active</span>
       </div>
 
       <div id="incidentList" style="display: flex; flex-direction: column; gap: 12px;">
-        <!-- Pre-populated Incidents -->
-        <div class="incident-card active" onclick="selectIncident('INC-9021', 'Cardiac & Critical Medical Response Protocol', 'medical', 'critical')">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="incident-severity sev-critical">CRITICAL • MEDICAL</span>
-            <span style="font-size:11px; color:var(--text-muted);">2 mins ago</span>
-          </div>
-          <div class="incident-title">Cardiac Arrest Emergency</div>
-          <div class="incident-desc">Citizen collapsed at central station. Unresponsive, CPR requested by bystanders. Auto-protocol active.</div>
-        </div>
-
-        <div class="incident-card" onclick="selectIncident('INC-9022', 'Structural Fire & Evacuation Protocol', 'fire', 'critical')">
+        <!-- Pre-populated Agency Complaints -->
+        <div class="incident-card active" data-category="fire" onclick="selectIncident('INC-FIRE-9021', 'Structural Fire & Evacuation Protocol', 'fire', 'critical', 'Fire Department #4')">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="incident-severity sev-critical">CRITICAL • FIRE</span>
-            <span style="font-size:11px; color:var(--text-muted);">8 mins ago</span>
+            <span style="font-size:11px; color:var(--text-muted);">2 mins ago</span>
           </div>
           <div class="incident-title">Structure Fire on 4th Floor</div>
-          <div class="incident-desc">Heavy black smoke reported from commercial building. Evacuation sirens deployed automatically.</div>
+          <div class="incident-desc">Commercial building electrical fire. Thick smoke reported. Engine #4 & Ladder #2 deployed.</div>
+          <div class="dept-pill">Recipients: Fire Department (Suppression) • Hospital ER</div>
         </div>
 
-        <div class="incident-card" onclick="selectIncident('INC-9023', 'High-Speed Collision Protocol', 'accident', 'high')">
+        <div class="incident-card" data-category="medical" onclick="selectIncident('INC-MED-9022', 'Cardiac & Critical Medical Response', 'medical', 'critical', 'Hospital Trauma ER')">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="incident-severity sev-critical">CRITICAL • MEDICAL</span>
+            <span style="font-size:11px; color:var(--text-muted);">5 mins ago</span>
+          </div>
+          <div class="incident-title">Cardiac Arrest Emergency</div>
+          <div class="incident-desc">Citizen collapsed at central station. Unresponsive. ALS Ambulance #9 assigned with O2 bay alert.</div>
+          <div class="dept-pill">Recipients: Hospital ER Bay 2 • ALS Ambulance</div>
+        </div>
+
+        <div class="incident-card" data-category="accident" onclick="selectIncident('INC-ACC-9023', 'Vehicle Crash & Extrication Protocol', 'accident', 'high', 'Ambulance & Fire Rescue')">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="incident-severity sev-high">HIGH • CRASH</span>
-            <span style="font-size:11px; color:var(--text-muted);">15 mins ago</span>
+            <span style="font-size:11px; color:var(--text-muted);">12 mins ago</span>
           </div>
-          <div class="incident-title">Multi-Vehicle Crash on Highway 101</div>
-          <div class="incident-desc">Two sedans collided near Exit 14. Extrication hydraulic unit auto-dispatched.</div>
+          <div class="incident-title">Multi-Vehicle Highway Crash</div>
+          <div class="incident-desc">Two sedans collided near Exit 14. Hydraulic extrication unit & traffic detour active.</div>
+          <div class="dept-pill">Recipients: Fire Extrication • Paramedics • Traffic Police</div>
+        </div>
+
+        <div class="incident-card" data-category="crime" onclick="selectIncident('INC-POL-9024', 'Active Threat Security Protocol', 'crime', 'critical', 'Police Command SWAT')">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="incident-severity sev-critical">CRITICAL • SECURITY</span>
+            <span style="font-size:11px; color:var(--text-muted);">18 mins ago</span>
+          </div>
+          <div class="incident-title">Active Threat Security Alarm</div>
+          <div class="incident-desc">Silent priority alarm triggered. SWAT cruisers 102 & 104 locked onto perimeter.</div>
+          <div class="dept-pill">Recipients: Police SWAT • Trauma Paramedics</div>
         </div>
       </div>
     </section>
 
-    <!-- Center Column: Radar Map & Protocol Stepper -->
+    <!-- Center Column: Radar Map & Fleet Telemetry -->
     <section class="panel">
       <div class="panel-header">
         <div class="panel-title">
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-          GIS TACTICAL MAP & AUTOMATED PROTOCOL MONITOR
+          DEPARTMENT FLEET & GIS TACTICAL MAP
+        </div>
+      </div>
+
+      <!-- Fleet Telemetry Box -->
+      <div class="fleet-grid">
+        <div class="fleet-box">
+          <div class="fleet-num" id="fleetVal1">14 UNITS</div>
+          <div class="fleet-label" id="fleetLbl1">READY DISPATCH FLEET</div>
+        </div>
+        <div class="fleet-box">
+          <div class="fleet-num" style="color: var(--accent-amber);" id="fleetVal2">3 MINS</div>
+          <div class="fleet-label" id="fleetLbl2">AVG INCIDENT RESPONSE ETA</div>
         </div>
       </div>
 
@@ -461,108 +562,106 @@
       <div class="radar-container">
         <div class="radar-grid"></div>
         <div class="radar-sweep"></div>
-        <div class="incident-pin" style="top: 40%; left: 45%;"></div>
+        <div class="incident-pin" style="top: 38%; left: 45%;"></div>
         <div class="incident-pin" style="top: 65%; left: 70%; background: var(--accent-amber); box-shadow: 0 0 16px var(--accent-amber);"></div>
+        <div class="incident-pin" style="top: 25%; left: 78%; background: var(--accent-cyan); box-shadow: 0 0 16px var(--accent-cyan);"></div>
         <div style="position: absolute; bottom: 12px; left: 16px; font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted);">
           LAT: 37.7749 • LNG: -122.4194 • RADIUS: 5.0 KM
         </div>
       </div>
 
       <!-- Active Protocol Stepper -->
-      <div style="margin-top: 12px;">
-        <h3 id="activeProtocolTitle" style="font-size: 16px; font-weight: 800; color: #fff;">
-          ACTIVE PROTOCOL: Cardiac & Critical Medical Response
+      <div style="margin-top: 6px;">
+        <h3 id="activeProtocolTitle" style="font-size: 15px; font-weight: 800; color: #fff;">
+          ACTIVE PROTOCOL: Structural Fire & Evacuation Protocol
         </h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-          Incident ID: INC-9021 • Automated Multi-Agency Dispatch Triggered
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;" id="activeProtocolSub">
+          Incident ID: INC-FIRE-9021 • Dispatched Agency: Fire Department #4
         </p>
 
         <div class="protocol-stepper">
           <div class="step-item">
             <div class="step-badge step-done">✓</div>
             <div class="step-info">
-              <h4>1. Immediate Triage & Priority Alarm</h4>
-              <p>AI verified critical cardiac alert. High-priority alarm broadcasted to dispatch grid.</p>
+              <h4>1. Multi-Agency Complaint Intake & AI Triage</h4>
+              <p>Gemini AI identified root cause: Structural Electrical Ignition. Fire & ER notified.</p>
             </div>
           </div>
 
           <div class="step-item">
             <div class="step-badge step-active">2</div>
             <div class="step-info">
-              <h4>2. Automated ALS Ambulance Dispatch (Active)</h4>
-              <p>Mobile ICU Unit RESQ-AMB-09 assigned. ETA: 4 mins 12 secs.</p>
+              <h4>2. Heavy Engine & Ladder Unit Dispatch (Active)</h4>
+              <p>Engine #4 & Ladder #2 deployed with hydrant water pressure boost. ETA: 3 mins.</p>
             </div>
           </div>
 
           <div class="step-item">
             <div class="step-badge step-pending">3</div>
             <div class="step-info">
-              <h4>3. Emergency Contact & CPR Beacon Broadcast</h4>
-              <p>SMS alert sent to emergency contacts with live tracking link.</p>
-            </div>
-          </div>
-
-          <div class="step-item">
-            <div class="step-badge step-pending">4</div>
-            <div class="step-info">
-              <h4>4. Interactive CPR Metronome Guide Sync</h4>
-              <p>Streaming 110 bpm compression guide to citizen smartphone.</p>
+              <h4>3. Hospital Trauma & Burn Unit Sync</h4>
+              <p>ALS Ambulance #9 assigned. ER Bay 2 alerted for smoke inhalation casualties.</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Right Column: Protocol Controls & AI Customizer -->
+    <!-- Right Column: Agency Control & Acknowledge Actions -->
     <section class="panel">
       <div class="panel-header">
         <div class="panel-title">
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-          MANUAL OVERRIDE & AI GENERATOR
+          AGENCY CONTROL & COMPLAINT ACKNOWLEDGE
         </div>
       </div>
 
+      <button class="btn" onclick="acknowledgeActiveComplaint()">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+        ACCEPT & ACKNOWLEDGE COMPLAINT
+      </button>
+
       <div>
-        <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">SELECT EMERGENCY PROTOCOL</label>
+        <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">SELECT EMERGENCY DISPATCH PROTOCOL</label>
         <select id="protocolSelect">
-          <option value="cardiac_arrest">Cardiac & Critical Medical Protocol</option>
           <option value="structure_fire">Structural Fire & Evacuation Protocol</option>
+          <option value="cardiac_arrest">Hospital ER & Trauma Medical Protocol</option>
           <option value="vehicle_crash">High-Speed Crash & Extrication Protocol</option>
-          <option value="natural_disaster">Flash Flood Response Protocol</option>
-          <option value="hazmat_leak">Hazardous Chemical Leak Protocol</option>
-          <option value="active_threat">Active Threat Security Protocol</option>
+          <option value="natural_disaster">Flash Flood Water Rescue Protocol</option>
+          <option value="active_threat">Police SWAT Security Protocol</option>
         </select>
       </div>
 
-      <button class="btn" onclick="triggerManualProtocol()">
+      <button class="btn btn-secondary" onclick="triggerManualProtocol()">
         <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        MANUALLY EXECUTE PROTOCOL
+        DISPATCH AGENCY UNITS NOW
       </button>
 
-      <hr style="border: none; border-top: 1px solid var(--border-color); margin: 8px 0;">
+      <hr style="border: none; border-top: 1px solid var(--border-color); margin: 4px 0;">
 
       <div>
-        <label style="font-size: 12px; font-weight: 700; color: var(--accent-cyan); display: block; margin-bottom: 6px;">
-          ✨ GEMINI AI DYNAMIC PROTOCOL GENERATOR
+        <label style="font-size: 12px; font-weight: 700; color: var(--accent-amber); display: block; margin-bottom: 6px;">
+          ✨ GEMINI AI DYNAMIC INCIDENT ANALYSIS
         </label>
-        <textarea id="aiPrompt" rows="3" placeholder="Describe complex or unusual emergency parameters..."></textarea>
+        <textarea id="aiPrompt" rows="3" placeholder="Analyze unusual incident parameter or request additional agency backup..."></textarea>
       </div>
 
       <button class="btn btn-secondary" onclick="generateAiProtocol()">
-        <svg width="18" height="18" fill="var(--accent-cyan)" viewBox="0 0 24 24"><path d="M12 2L9 9l-7 3 7 3 3 7 3-7 7-3-7-3z"/></svg>
-        GENERATE CUSTOM AI PROTOCOL
+        <svg width="18" height="18" fill="var(--accent-amber)" viewBox="0 0 24 24"><path d="M12 2L9 9l-7 3 7 3 3 7 3-7 7-3-7-3z"/></svg>
+        GENERATE AGENCY BACKUP PROTOCOL
       </button>
 
-      <div id="aiOutput" style="display:none; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 14px; padding: 12px; font-size: 12px; color: #fff;">
-        <strong>AI Generated Response Steps:</strong>
+      <div id="aiOutput" style="display:none; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 12px; font-size: 12px; color: #fff;">
+        <strong>AI Agency Backup Strategy:</strong>
         <ol style="margin-left: 16px; margin-top: 6px;" id="aiStepsList"></ol>
       </div>
-
     </section>
 
   </main>
 
   <script>
+    let currentDept = 'all';
+
     function updateClock() {
       const now = new Date();
       document.getElementById('liveClock').textContent = now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
@@ -570,15 +669,88 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    function selectIncident(id, title, cat, sev) {
+    function filterDepartment(dept) {
+      currentDept = dept;
+      const tabs = ['all', 'fire', 'hospital', 'ambulance', 'police'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tab-' + t);
+        btn.className = 'agency-tab' + (t === dept ? ' active-' + t : '');
+      });
+
+      const cards = document.querySelectorAll('.incident-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        if (dept === 'all') {
+          card.style.display = 'block';
+          visibleCount++;
+        } else if (dept === 'fire' && (cat === 'fire' || cat === 'other')) {
+          card.style.display = 'block';
+          visibleCount++;
+        } else if (dept === 'hospital' && (cat === 'medical' || cat === 'fire')) {
+          card.style.display = 'block';
+          visibleCount++;
+        } else if (dept === 'ambulance' && (cat === 'medical' || cat === 'accident')) {
+          card.style.display = 'block';
+          visibleCount++;
+        } else if (dept === 'police' && (cat === 'crime' || cat === 'accident')) {
+          card.style.display = 'block';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      document.getElementById('incidentCount').textContent = visibleCount + ' Active';
+
+      // Update Department Specific Titles & Telemetry
+      if (dept === 'fire') {
+        document.getElementById('headerTitle').textContent = 'Fire Department Emergency Command Portal';
+        document.getElementById('headerSubtitle').textContent = 'FIRE SUPPRESSION • EXTRICATION • HYDRANT NETWORK';
+        document.getElementById('agencyEngineStatus').textContent = 'FIRE DISPATCH ENGINE ONLINE';
+        document.getElementById('fleetVal1').textContent = '8 TRUCKS';
+        document.getElementById('fleetLbl1').textContent = 'ACTIVE FIRE ENGINES';
+      } else if (dept === 'hospital') {
+        document.getElementById('headerTitle').textContent = 'Hospital ER & Trauma Center Portal';
+        document.getElementById('headerSubtitle').textContent = 'TRAUMA ER BAYS • BURN CARE • PATIENT VITALS';
+        document.getElementById('agencyEngineStatus').textContent = 'TRAUMA ER SYSTEM ONLINE';
+        document.getElementById('fleetVal1').textContent = '12 BAYS';
+        document.getElementById('fleetLbl1').textContent = 'AVAILABLE ER BAYS';
+      } else if (dept === 'ambulance') {
+        document.getElementById('headerTitle').textContent = 'Ambulance Service Dispatch Portal';
+        document.getElementById('headerSubtitle').textContent = 'ALS MOBILE ICU • PARAMEDIC GPS • EMERGENCY SIRENS';
+        document.getElementById('agencyEngineStatus').textContent = 'AMBULANCE FLEET ONLINE';
+        document.getElementById('fleetVal1').textContent = '15 UNITS';
+        document.getElementById('fleetLbl1').textContent = 'MOBILE ICU FLEET';
+      } else if (dept === 'police') {
+        document.getElementById('headerTitle').textContent = 'Police Station Security Command Portal';
+        document.getElementById('headerSubtitle').textContent = 'TACTICAL SWAT • SILENT ALARMS • PERIMETER DETOURS';
+        document.getElementById('agencyEngineStatus').textContent = 'POLICE COMMAND ONLINE';
+        document.getElementById('fleetVal1').textContent = '22 CRUISERS';
+        document.getElementById('fleetLbl1').textContent = 'SWAT & PATROL FLEET';
+      } else {
+        document.getElementById('headerTitle').textContent = 'ResQ AI Emergency Command Center';
+        document.getElementById('headerSubtitle').textContent = 'MULTI-AGENCY REAL-TIME INCIDENT PORTALS';
+        document.getElementById('agencyEngineStatus').textContent = 'ALL DISPATCH ENGINES ONLINE';
+        document.getElementById('fleetVal1').textContent = '14 UNITS';
+        document.getElementById('fleetLbl1').textContent = 'READY DISPATCH FLEET';
+      }
+    }
+
+    function selectIncident(id, title, cat, sev, deptName) {
       document.getElementById('activeProtocolTitle').textContent = 'ACTIVE PROTOCOL: ' + title;
-      alert('Selected Incident ' + id + ' — Telemetry focused.');
+      document.getElementById('activeProtocolSub').textContent = 'Incident ID: ' + id + ' • Dispatched Agency: ' + deptName;
+    }
+
+    function acknowledgeActiveComplaint() {
+      alert('✓ Complaint Accepted & Acknowledged! Unit dispatch confirmed to emergency location.');
     }
 
     function triggerManualProtocol() {
       const select = document.getElementById('protocolSelect');
       const val = select.options[select.selectedIndex].text;
-      alert('Executing protocol: ' + val);
+      alert('Executing Agency Protocol: ' + val);
     }
 
     function generateAiProtocol() {
@@ -589,10 +761,10 @@
       }
       document.getElementById('aiOutput').style.display = 'block';
       const steps = [
-        "Isolate perimeter within 300 meters.",
-        "Deploy specialized decontamination / triage squad.",
-        "Alert municipal response network with encrypted channel.",
-        "Monitor atmospheric / structural sensor feed."
+        "Deploy joint Fire & Hospital burn response team.",
+        "Clear priority emergency lane for incoming ambulance.",
+        "Broadcast GPS coordinates to nearest active cruisers.",
+        "Stream live telemetry to regional incident command."
       ];
       const list = document.getElementById('aiStepsList');
       list.innerHTML = steps.map(s => `<li>${s}</li>`).join('');

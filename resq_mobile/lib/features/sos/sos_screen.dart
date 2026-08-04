@@ -4,6 +4,7 @@ import '../../core/theme.dart';
 import '../../services/location_service.dart';
 import '../../services/api_service.dart';
 import '../../services/protocol_service.dart';
+import '../agency/agency_dashboards_screen.dart';
 import '../dispatch/agency_dispatch_demo_screen.dart';
 import '../protocols/protocol_execution_screen.dart';
 import '../protocols/protocols_screen.dart';
@@ -304,6 +305,28 @@ class _SosScreenState extends State<SosScreen> with TickerProviderStateMixin {
                   label: const Text(
                     'AGENCY DISPATCH SMS SIMULATOR',
                     style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, letterSpacing: 0.5),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Individual Agency Dashboards Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const AgencyDashboardsScreen()),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.emergencyRed,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    elevation: 4,
+                  ),
+                  icon: const Icon(Icons.local_fire_department_rounded, size: 20, color: Colors.white),
+                  label: const Text(
+                    'DEPARTMENT TERMINALS (FIRE / HOSPITAL / POLICE)',
+                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12, letterSpacing: 0.5),
                   ),
                 ),
               ),
