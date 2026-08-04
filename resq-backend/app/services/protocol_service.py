@@ -421,23 +421,30 @@ def get_protocol(protocol_id: str) -> Optional[Dict[str, Any]]:
 def match_protocol_for_report(category: str, severity: str, raw_text: str = "") -> Dict[str, Any]:
     text_lower = (raw_text or "").lower()
 
-    # Match by explicit category & keywords
+    # 1. Match by explicit category
     for proto in PROTOCOLS.values():
         rules = proto["autoTriggerRules"]
         if category in rules["categories"]:
-            if any(kw in text_lower for kw in rules.get("keywords", [])):
-                return proto
+            return proto
 
-    # Fallback by category
+    # 2. Match by keywords in raw_text
+    for proto in PROTOCOLS.values():
+        rules = proto["autoTriggerRules"]
+        if any(kw in text_lower for kw in rules.get("keywords", [])):
+            return proto
+
+    # 3. Fallback by category
     category_defaults = {
         "medical": "cardiac_arrest",
         "fire": "structure_fire",
         "accident": "vehicle_crash",
         "natural_disaster": "natural_disaster",
         "crime": "active_threat",
+        "other": "hazmat_leak",
     }
     matched_id = category_defaults.get(category, "cardiac_arrest")
     return PROTOCOLS[matched_id]
+
 
 
 def execute_protocol(report_id: str, protocol_id: Optional[str] = None) -> Dict[str, Any]:

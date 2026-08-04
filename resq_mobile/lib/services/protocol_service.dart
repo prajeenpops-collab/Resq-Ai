@@ -31,6 +31,7 @@ class ProtocolService {
   Future<ActiveProtocolExecution?> triggerProtocolExecution({
     required String reportId,
     String? protocolId,
+    String? category,
   }) async {
     try {
       final token = await _authService.getIdToken();
@@ -44,6 +45,7 @@ class ProtocolService {
             body: jsonEncode({
               'reportId': reportId,
               if (protocolId != null) 'protocolId': protocolId,
+              if (category != null) 'category': category,
             }),
           )
           .timeout(const Duration(seconds: 3));
@@ -56,8 +58,8 @@ class ProtocolService {
       debugPrint('Error triggering protocol execution: $e');
     }
 
-    // Fallback simulation for offline execution
-    return _generateFallbackExecution(reportId, protocolId ?? 'cardiac_arrest');
+    // Fallback simulation for offline execution matching exact category
+    return _generateFallbackExecution(reportId, protocolId ?? _resolveProtoIdFromCategory(category), category);
   }
 
   Future<ActiveProtocolExecution?> fetchActiveTelemetry(String reportId) async {
@@ -161,9 +163,24 @@ class ProtocolService {
     ];
   }
 
-  ActiveProtocolExecution _generateFallbackExecution(String reportId, String protoId) {
+  String _resolveProtoIdFromCategory(String? category) {
+    if (category == null) return 'cardiac_arrest';
+    final cat = category.toLowerCase();
+    if (cat == 'fire') return 'structure_fire';
+    if (cat == 'accident') return 'vehicle_crash';
+    if (cat == 'natural_disaster') return 'natural_disaster';
+    if (cat == 'crime') return 'active_threat';
+    if (cat == 'other' || cat.contains('hazmat')) return 'hazmat_leak';
+    return 'cardiac_arrest';
+  }
+
+  ActiveProtocolExecution _generateFallbackExecution(String reportId, String protoId, [String? category]) {
     final protos = _getFallbackProtocols();
-    final p = protos.firstWhere((element) => element.protocolId == protoId, orElse: () => protos.first);
+    String targetId = protoId;
+    if (category != null) {
+      targetId = _resolveProtoIdFromCategory(category);
+    }
+    final p = protos.firstWhere((element) => element.protocolId == targetId, orElse: () => protos.first);
 
     return ActiveProtocolExecution(
       reportId: reportId,

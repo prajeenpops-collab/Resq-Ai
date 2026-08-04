@@ -27,6 +27,7 @@ class ApiService {
     required double lat,
     required double lng,
     String? address,
+    String? category,
   }) async {
     try {
       final headers = await _headers();
@@ -40,6 +41,7 @@ class ApiService {
               'mediaUrl': mediaUrl,
               'location': {'lat': lat, 'lng': lng},
               'address': address,
+              if (category != null) 'category': category,
             }),
           )
           .timeout(const Duration(seconds: 3));
@@ -53,21 +55,24 @@ class ApiService {
 
     // Immediate local emergency report creation for physical devices / offline server
     final fallbackId = 'RESQ-${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';
-    String category = 'medical';
-    final textLower = (rawText ?? '').toLowerCase();
-    if (textLower.contains('fire') || textLower.contains('smoke')) {
-      category = 'fire';
-    } else if (textLower.contains('crash') || textLower.contains('car') || textLower.contains('accident')) {
-      category = 'accident';
-    } else if (textLower.contains('flood') || textLower.contains('water')) {
-      category = 'natural_disaster';
-    } else if (textLower.contains('gun') || textLower.contains('threat') || textLower.contains('police')) {
-      category = 'crime';
+    String resolvedCategory = category ?? 'medical';
+    if (category == null) {
+      final textLower = (rawText ?? '').toLowerCase();
+      if (textLower.contains('fire') || textLower.contains('smoke')) {
+        resolvedCategory = 'fire';
+      } else if (textLower.contains('crash') || textLower.contains('car') || textLower.contains('accident')) {
+        resolvedCategory = 'accident';
+      } else if (textLower.contains('flood') || textLower.contains('water')) {
+        resolvedCategory = 'natural_disaster';
+      } else if (textLower.contains('gun') || textLower.contains('threat') || textLower.contains('police')) {
+        resolvedCategory = 'crime';
+      }
+    }
     }
 
     return EmergencyReport(
       reportId: fallbackId,
-      category: category,
+      category: resolvedCategory,
       severity: 'critical',
       aiSummary: rawText ?? 'Urgent SOS Signal logged. Nearest emergency responders dispatched.',
       firstAidGuidance: 'Stay calm. Paramedics and emergency response units are en route to your GPS location.',

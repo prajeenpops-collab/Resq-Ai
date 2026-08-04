@@ -60,11 +60,13 @@ class _SosScreenState extends State<SosScreen> with TickerProviderStateMixin {
         rawText: customText ?? 'SOS Emergency triggered — urgent citizen assistance required for $category emergency.',
         lat: lat,
         lng: lng,
+        category: category,
       );
 
       // Auto-trigger backend automated protocol execution
       final execution = await _protocolService.triggerProtocolExecution(
         reportId: report.reportId,
+        category: category,
       );
 
       if (!mounted) return;
