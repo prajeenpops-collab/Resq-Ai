@@ -27,15 +27,15 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
   int _secondsElapsed = 0;
   final Set<int> _checkedChecklistItems = {};
 
-  // CPR Metronome State
-  bool _metronomeActive = false;
-  int _cprBeatCount = 0;
-  late AnimationController _cprPulseController;
+  // Interactive Topic-Specific Guide State
+  bool _actionActive = false;
+  int _actionCounter = 0;
+  late AnimationController _pulseController;
 
   @override
   void initState() {
     super.initState();
-    _cprPulseController = AnimationController(
+    _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 545), // ~110 BPM
     );
@@ -53,7 +53,7 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
   void dispose() {
     _timer?.cancel();
     _metronomeTimer?.cancel();
-    _cprPulseController.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
@@ -74,21 +74,21 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
     });
   }
 
-  void _toggleCprMetronome() {
+  void _toggleTopicAction() {
     setState(() {
-      _metronomeActive = !_metronomeActive;
+      _actionActive = !_actionActive;
     });
 
-    if (_metronomeActive) {
-      _cprPulseController.repeat(reverse: true);
+    if (_actionActive) {
+      _pulseController.repeat(reverse: true);
       _metronomeTimer = Timer.periodic(const Duration(milliseconds: 545), (t) {
-        if (!mounted || !_metronomeActive) return;
+        if (!mounted || !_actionActive) return;
         setState(() {
-          _cprBeatCount++;
+          _actionCounter++;
         });
       });
     } else {
-      _cprPulseController.stop();
+      _pulseController.stop();
       _metronomeTimer?.cancel();
     }
   }
@@ -122,7 +122,7 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
   double _calculateDistanceKm(int totalEtaSec) {
     int remaining = totalEtaSec - _secondsElapsed;
     if (remaining <= 0) return 0.1;
-    return (remaining / 300.0) * 3.5; // Simulated distance countdown
+    return (remaining / 300.0) * 3.5;
   }
 
   @override
@@ -183,11 +183,9 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
                       ..._execution!.dispatchedUnits.map((u) => _buildUnitCard(context, u)),
                       const SizedBox(height: 24),
 
-                      // 110 BPM CPR Metronome Assistant Widget
-                      if (_execution!.category == 'medical') ...[
-                        _buildCprMetronomeCard(context),
-                        const SizedBox(height: 24),
-                      ],
+                      // Dynamic Topic-Specific Interactive Emergency Action Guide
+                      _buildTopicSpecificGuideCard(context),
+                      const SizedBox(height: 24),
 
                       // 5-Phase Automated Execution Stepper
                       Text(
@@ -230,7 +228,7 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Dialing 911 Direct Line...'),
+                      content: Text('Dialing 911 Direct Emergency Line...'),
                       backgroundColor: AppTheme.criticalRed,
                     ),
                   );
@@ -421,7 +419,6 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
           ),
           const SizedBox(height: 16),
 
-          // Simulated Animated Route Progress Bar
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
@@ -446,27 +443,94 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
     );
   }
 
-  Widget _buildCprMetronomeCard(BuildContext context) {
+  /// Dynamic Topic-Specific Interactive Action Guide tailored for each emergency category
+  Widget _buildTopicSpecificGuideCard(BuildContext context) {
+    final cat = _execution!.category.toLowerCase();
+
+    IconData icon;
+    Color accentColor;
+    String title;
+    String description;
+    String buttonTextActive;
+    String buttonTextInactive;
+
+    if (cat == 'fire') {
+      icon = Icons.local_fire_department_rounded;
+      accentColor = AppTheme.warningAmber;
+      title = 'SMOKE EVACUATION & BREATHING GUIDE';
+      description = _actionActive
+          ? 'Cover mouth with wet cloth! Crawl low under smoke. Seconds: $_actionCounter'
+          : 'Tap to start visual pace guide for low-smoke crawling & evacuation.';
+      buttonTextActive = 'STOP MASK';
+      buttonTextInactive = 'START SMOKE MASK';
+    } else if (cat == 'accident') {
+      icon = Icons.car_crash_rounded;
+      accentColor = AppTheme.neonAlert;
+      title = 'CRASH SPINAL STABILIZATION ASSIST';
+      description = _actionActive
+          ? 'Hold victim head steady! Do not twist neck. Hold timer: ${_actionCounter}s'
+          : 'Tap for step-by-step spinal immobilization & fuel safety guide.';
+      buttonTextActive = 'STOP HOLD';
+      buttonTextInactive = 'START HOLD GUIDE';
+    } else if (cat == 'natural_disaster') {
+      icon = Icons.flood_rounded;
+      accentColor = AppTheme.cyberCyan;
+      title = 'HIGH-GROUND SOS STROBE & BEACON';
+      description = _actionActive
+          ? 'Flashing screen beacon active to signal rescue boats! Flash: $_actionCounter'
+          : 'Tap to activate visual high-intensity SOS strobe for rescue teams.';
+      buttonTextActive = 'OFF STROBE';
+      buttonTextInactive = 'START STROBE BEACON';
+    } else if (cat == 'crime') {
+      icon = Icons.security_rounded;
+      accentColor = AppTheme.cyberCyan;
+      title = 'SILENT THREAT & BARRICADE ASSIST';
+      description = _actionActive
+          ? 'Device speaker silenced! Mute timer active: ${_actionCounter}s'
+          : 'Tap to instantly mute device audio and open silent barricade checklist.';
+      buttonTextActive = 'UNMUTE SILENT';
+      buttonTextInactive = 'ACTIVATE SILENT MODE';
+    } else if (cat == 'other' || cat.contains('hazmat')) {
+      icon = Icons.science_rounded;
+      accentColor = AppTheme.warningAmber;
+      title = 'TOXIC HAZMAT UPWIND EVACUATION';
+      description = _actionActive
+          ? 'Move UPWIND away from toxic fumes! Clean air timer: ${_actionCounter}s'
+          : 'Tap for immediate chemical spill isolation & decontamination steps.';
+      buttonTextActive = 'STOP TIMER';
+      buttonTextInactive = 'START DECON GUIDE';
+    } else {
+      // Default: Medical / CPR
+      icon = Icons.favorite_rounded;
+      accentColor = AppTheme.neonAlert;
+      title = '110 BPM CPR COMPRESSION METRONOME';
+      description = _actionActive
+          ? 'Push hard & fast to pulse beat! Beats: $_actionCounter'
+          : 'Tap to start audio/visual CPR rhythm helper.';
+      buttonTextActive = 'STOP CPR';
+      buttonTextInactive = 'START CPR RHYTHM';
+    }
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.neonAlert.withValues(alpha: 0.12),
+        color: accentColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppTheme.neonAlert.withValues(alpha: 0.4)),
+        border: Border.all(color: accentColor.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [
           ScaleTransition(
-            scale: Tween<double>(begin: 1.0, end: 1.25).animate(_cprPulseController),
+            scale: Tween<double>(begin: 1.0, end: 1.25).animate(_pulseController),
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: _metronomeActive ? AppTheme.neonAlert : const Color(0xFF334155),
+                color: _actionActive ? accentColor : const Color(0xFF334155),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Icons.favorite_rounded,
-                color: _metronomeActive ? Colors.white : const Color(0xFF94A3B8),
+                icon,
+                color: _actionActive ? Colors.white : const Color(0xFF94A3B8),
                 size: 24,
               ),
             ),
@@ -476,29 +540,27 @@ class _ProtocolExecutionScreenState extends State<ProtocolExecutionScreen> with 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  '110 BPM CPR COMPRESSION GUIDE',
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13),
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  _metronomeActive
-                      ? 'Push hard & fast to pulse beat! Beats: $_cprBeatCount'
-                      : 'Tap to start audio/visual CPR rhythm helper.',
+                  description,
                   style: const TextStyle(color: Color(0xFFCBD5E1), fontSize: 11),
                 ),
               ],
             ),
           ),
           ElevatedButton(
-            onPressed: _toggleCprMetronome,
+            onPressed: _toggleTopicAction,
             style: ElevatedButton.styleFrom(
-              backgroundColor: _metronomeActive ? AppTheme.criticalRed : AppTheme.safeGreen,
+              backgroundColor: _actionActive ? AppTheme.criticalRed : AppTheme.safeGreen,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             ),
             child: Text(
-              _metronomeActive ? 'STOP' : 'START CPR',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              _actionActive ? buttonTextActive : buttonTextInactive,
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
             ),
           ),
         ],
