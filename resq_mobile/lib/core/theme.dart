@@ -1,46 +1,133 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
+  // Ultra-modern Emergency Palette
   static const Color emergencyRed = Color(0xFFE53935);
-  static const Color criticalRed = Color(0xFFB71C1C);
-  static const Color safeGreen = Color(0xFF2E7D32);
-  static const Color warningAmber = Color(0xFFF9A825);
-
-  static ThemeData light = ThemeData(
-    brightness: Brightness.light,
-    useMaterial3: true,
-    colorSchemeSeed: emergencyRed,
-    scaffoldBackgroundColor: const Color(0xFFF7F7F9),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black87,
-      elevation: 0,
-      centerTitle: true,
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-      ),
-    ),
-  );
+  static const Color criticalRed = Color(0xFFD32F2F);
+  static const Color neonAlert = Color(0xFFFF5252);
+  static const Color warningAmber = Color(0xFFF59E0B);
+  static const Color safeGreen = Color(0xFF10B981);
+  static const Color cyberCyan = Color(0xFF06B6D4);
+  static const Color darkBackground = Color(0xFF0F172A); // Slate 900
+  static const Color darkCard = Color(0xFF1E293B); // Slate 800
+  static const Color darkSurface = Color(0xFF334155); // Slate 700
+  static const Color lightBackground = Color(0xFFF8FAFC); // Slate 50
+  static const Color lightCard = Color(0xFFFFFFFF);
 
   static ThemeData dark = ThemeData(
     brightness: Brightness.dark,
     useMaterial3: true,
-    colorSchemeSeed: emergencyRed,
-    scaffoldBackgroundColor: const Color(0xFF121214),
+    scaffoldBackgroundColor: darkBackground,
+    colorScheme: const ColorScheme.dark(
+      primary: neonAlert,
+      secondary: cyberCyan,
+      surface: darkCard,
+      error: criticalRed,
+      onPrimary: Colors.white,
+      onSurface: Colors.white,
+    ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF1C1C1E),
+      backgroundColor: darkBackground,
+      surfaceTintColor: Colors.transparent,
       elevation: 0,
       centerTitle: true,
+      titleTextStyle: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        letterSpacing: 0.5,
+      ),
+      iconTheme: IconThemeData(color: Colors.white),
+    ),
+    cardTheme: CardThemeData(
+      color: darkCard,
+      elevation: 4,
+      shadowColor: Colors.black45,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        backgroundColor: emergencyRed,
+        foregroundColor: Colors.white,
+        elevation: 6,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: Colors.white,
+        side: const BorderSide(color: Color(0xFF475569), width: 1.5),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      ),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: darkCard,
+      indicatorColor: emergencyRed.withValues(alpha: 0.25),
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return const TextStyle(color: neonAlert, fontWeight: FontWeight.bold, fontSize: 12);
+        }
+        return const TextStyle(color: Color(0xFF94A3B8), fontSize: 12);
+      }),
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return const IconThemeData(color: neonAlert, size: 26);
+        }
+        return const IconThemeData(color: Color(0xFF94A3B8), size: 24);
+      }),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: darkSurface,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: neonAlert, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
+    ),
+  );
+
+  static ThemeData light = ThemeData(
+    brightness: Brightness.light,
+    useMaterial3: true,
+    scaffoldBackgroundColor: lightBackground,
+    colorScheme: const ColorScheme.light(
+      primary: emergencyRed,
+      secondary: cyberCyan,
+      surface: lightCard,
+      error: criticalRed,
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      centerTitle: true,
+      titleTextStyle: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: Color(0xFF0F172A),
+      ),
+    ),
+    cardTheme: CardThemeData(
+      color: lightCard,
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: emergencyRed,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     ),
   );
@@ -55,6 +142,23 @@ class AppTheme {
         return warningAmber;
       default:
         return safeGreen;
+    }
+  }
+
+  static IconData categoryIcon(String category) {
+    switch (category.toLowerCase()) {
+      case 'medical':
+        return Icons.medical_services_rounded;
+      case 'fire':
+        return Icons.local_fire_department_rounded;
+      case 'accident':
+        return Icons.car_crash_rounded;
+      case 'natural_disaster':
+        return Icons.flood_rounded;
+      case 'crime':
+        return Icons.security_rounded;
+      default:
+        return Icons.warning_rounded;
     }
   }
 }

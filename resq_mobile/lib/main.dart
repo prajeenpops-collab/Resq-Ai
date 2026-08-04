@@ -28,14 +28,17 @@ class ResQApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          // Immediately bypass waiting state if user is present or stream hasn't fired yet
+          final currentUser = FirebaseAuth.instance.currentUser;
+          if (currentUser != null || snapshot.hasData) {
+            return const SosScreen();
           }
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show brief initial view or default to SosScreen/LoginScreen to avoid infinite loading
             return const SosScreen();
           }
           return const LoginScreen();
