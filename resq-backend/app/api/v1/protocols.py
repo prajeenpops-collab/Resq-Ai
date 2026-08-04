@@ -11,6 +11,7 @@ router = APIRouter(prefix="/protocols", tags=["protocols"])
 class ExecuteProtocolRequest(BaseModel):
     reportId: str
     protocolId: Optional[str] = None
+    category: Optional[str] = None
 
 
 class AiGenerateProtocolRequest(BaseModel):
@@ -48,6 +49,7 @@ async def trigger_protocol_execution(
         execution = protocol_service.execute_protocol(
             report_id=payload.reportId,
             protocol_id=payload.protocolId,
+            category=payload.category,
         )
         return execution
     except ValueError as exc:

@@ -39,6 +39,7 @@ async def submit_report(payload: EmergencyReportCreate, user: dict = Depends(get
         raise HTTPException(status_code=400, detail="Report must contain text, voice, or image content")
 
     ai_result = await gemini_service.analyze_emergency(raw_text, image_bytes, image_mime)
+    resolved_category = payload.category if payload.category else ai_result["category"]
 
     report_id = firestore_service.create_report({
         "userId": user["uid"],
@@ -48,17 +49,21 @@ async def submit_report(payload: EmergencyReportCreate, user: dict = Depends(get
         "location": {"lat": payload.location.lat, "lng": payload.location.lng},
         "address": payload.address,
         "aiSummary": ai_result["aiSummary"],
-        "category": ai_result["category"],
+        "category": resolved_category,
         "severity": ai_result["severity"],
         "firstAidGuidance": ai_result["firstAidGuidance"],
     })
 
     firestore_service.log_incident(report_id, "created", user["uid"])
-    fcm_service.notify_dispatchers(report_id, ai_result["category"], ai_result["severity"])
+    fcm_service.notify_dispatchers(report_id, resolved_category, ai_result["severity"])
 
     # Auto-execute emergency response protocol workflow
     try:
-        protocol_service.execute_protocol(report_id)
+        protocol_service.execute_protocol(
+            report_id=report_id,
+            protocol_id=payload.protocolId,
+            category=resolved_category,
+        )
     except Exception as e:
         pass
 

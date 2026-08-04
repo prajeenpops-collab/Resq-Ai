@@ -21,6 +21,9 @@ class EmergencyReportCreate(BaseModel):
     mediaUrl: Optional[str] = None          # Storage URL for voice/image, uploaded client-side first
     location: Location
     address: Optional[str] = None
+    category: Optional[str] = None
+    protocolId: Optional[str] = None
+
 
 
 class EmergencyReportResponse(BaseModel):

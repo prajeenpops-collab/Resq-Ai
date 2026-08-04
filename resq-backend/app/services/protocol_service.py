@@ -447,7 +447,7 @@ def match_protocol_for_report(category: str, severity: str, raw_text: str = "") 
 
 
 
-def execute_protocol(report_id: str, protocol_id: Optional[str] = None) -> Dict[str, Any]:
+def execute_protocol(report_id: str, protocol_id: Optional[str] = None, category: Optional[str] = None) -> Dict[str, Any]:
     """
     Automated execution runner:
     1. Fetches or matches the protocol for the report
@@ -460,9 +460,11 @@ def execute_protocol(report_id: str, protocol_id: Optional[str] = None) -> Dict[
     if not report:
         raise ValueError(f"Report {report_id} not found for protocol execution.")
 
+    resolved_cat = category or report.get("category", "medical")
+
     if not protocol_id:
         proto_data = match_protocol_for_report(
-            category=report.get("category", "medical"),
+            category=resolved_cat,
             severity=report.get("severity", "high"),
             raw_text=report.get("rawText", ""),
         )

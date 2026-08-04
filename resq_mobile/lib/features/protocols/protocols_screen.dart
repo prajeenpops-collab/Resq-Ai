@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 import '../../models/protocol.dart';
+import '../../services/api_service.dart';
+import '../../services/location_service.dart';
 import '../../services/protocol_service.dart';
+import 'protocol_execution_screen.dart';
 
 class ProtocolsScreen extends StatefulWidget {
   const ProtocolsScreen({super.key});
@@ -312,10 +315,66 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> with SingleTickerProv
                         ],
                       ),
                     )),
+                const SizedBox(height: 16),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () => _triggerProtocolNow(p),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.neonAlert,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    icon: const Icon(Icons.bolt_rounded, size: 20),
+                    label: Text(
+                      'EXECUTE ${p.title.toUpperCase()}',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _triggerProtocolNow(EmergencyProtocol p) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Triggering ${p.title}...'),
+        backgroundColor: AppTheme.neonAlert,
+        duration: const Duration(seconds: 1),
+      ),
+    );
+
+    final position = await LocationService().getCurrentLocation();
+    final lat = position?.latitude ?? 37.7749;
+    final lng = position?.longitude ?? -122.4194;
+
+    final report = await ApiService().submitReport(
+      type: 'text',
+      rawText: 'Emergency Protocol Triggered: ${p.title}',
+      lat: lat,
+      lng: lng,
+      category: p.category,
+    );
+
+    final execution = await ProtocolService().triggerProtocolExecution(
+      reportId: report.reportId,
+      protocolId: p.protocolId,
+      category: p.category,
+    );
+
+    if (!mounted) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ProtocolExecutionScreen(
+          reportId: report.reportId,
+          initialExecution: execution,
+        ),
       ),
     );
   }
