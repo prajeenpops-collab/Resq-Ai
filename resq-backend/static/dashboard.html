@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ResQ AI — Multi-Agency Department Emergency Dashboards</title>
+  <title>ResQ AI — Multi-Agency Department Emergency Command Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #090d16;
-      --panel-bg: rgba(18, 25, 41, 0.75);
-      --card-bg: rgba(28, 38, 61, 0.85);
-      --border-color: rgba(255, 255, 255, 0.08);
+      --bg-light: #f8fafc;
+      --panel-bg: #ffffff;
+      --card-bg: #ffffff;
+      --border-color: #fca5a5;
       --accent-red: #dc2626;
+      --accent-crimson: #991b1b;
       --accent-coral: #ef4444;
-      --accent-amber: #f59e0b;
-      --accent-green: #10b981;
+      --accent-amber: #d97706;
+      --accent-green: #059669;
       --accent-cyan: #2563eb;
-      --accent-purple: #a855f7;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      --text-main: #111827;
+      --text-muted: #475569;
     }
 
     * {
@@ -31,20 +31,19 @@
     }
 
     body {
-      background-color: var(--bg-dark);
+      background-color: var(--bg-light);
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(220, 38, 38, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(37, 99, 235, 0.08) 0%, transparent 40%);
+        radial-gradient(circle at 10% 10%, rgba(220, 38, 38, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(217, 119, 6, 0.05) 0%, transparent 40%);
       color: var(--text-main);
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* Navigation Bar */
+    /* Navigation Header — Red & White Theme */
     header {
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-color);
+      background: var(--accent-red);
+      box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
       padding: 14px 28px;
       display: flex;
       align-items: center;
@@ -57,61 +56,60 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
     .brand-logo {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, var(--accent-red), #991b1b);
-      border-radius: 10px;
+      width: 42px;
+      height: 42px;
+      background: #ffffff;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .brand-logo svg {
-      width: 22px;
-      height: 22px;
-      fill: white;
+      width: 24px;
+      height: 24px;
+      fill: var(--accent-red);
     }
 
     .brand-text h1 {
-      font-size: 20px;
-      font-weight: 800;
+      font-size: 22px;
+      font-weight: 900;
       letter-spacing: 0.5px;
-      background: linear-gradient(to right, #ffffff, #cbd5e1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #ffffff;
     }
 
     .brand-text p {
       font-size: 11px;
-      color: var(--accent-amber);
-      font-weight: 600;
+      color: #fef2f2;
+      font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
+      opacity: 0.9;
     }
 
     /* Department Filter Tabs Bar */
     .agency-tabs {
       display: flex;
-      gap: 10px;
-      background: rgba(15, 23, 42, 0.8);
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.2);
       padding: 6px;
       border-radius: 14px;
-      border: 1px solid var(--border-color);
+      backdrop-filter: blur(8px);
     }
 
     .agency-tab {
       padding: 8px 16px;
       border-radius: 10px;
       font-size: 12px;
-      font-weight: 700;
-      color: var(--text-muted);
+      font-weight: 800;
+      color: #ffffff;
       cursor: pointer;
-      border: none;
+      border: 1.5px solid transparent;
       background: transparent;
       transition: all 0.2s ease;
       display: flex;
@@ -120,15 +118,19 @@
     }
 
     .agency-tab:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.25);
     }
 
-    .agency-tab.active-all { background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); }
-    .agency-tab.active-fire { background: rgba(220, 38, 38, 0.25); color: #ef4444; border: 1px solid var(--accent-red); }
-    .agency-tab.active-hospital { background: rgba(16, 185, 129, 0.25); color: #10b981; border: 1px solid var(--accent-green); }
-    .agency-tab.active-ambulance { background: rgba(245, 158, 11, 0.25); color: #f59e0b; border: 1px solid var(--accent-amber); }
-    .agency-tab.active-police { background: rgba(37, 99, 235, 0.25); color: #60a5fa; border: 1px solid var(--accent-cyan); }
+    .agency-tab.active-all,
+    .agency-tab.active-fire,
+    .agency-tab.active-hospital,
+    .agency-tab.active-ambulance,
+    .agency-tab.active-police {
+      background: #ffffff;
+      color: var(--accent-red);
+      border-color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
 
     .status-bar {
       display: flex;
@@ -137,24 +139,25 @@
     }
 
     .status-badge {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: #ffffff;
+      border: 1.5px solid #ffffff;
       padding: 6px 14px;
       border-radius: 20px;
       font-size: 12px;
-      font-weight: 600;
-      color: var(--accent-green);
+      font-weight: 900;
+      color: var(--accent-red);
       display: flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--accent-green);
+      width: 9px;
+      height: 9px;
+      background: var(--accent-red);
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-red);
       animation: pulse 1.8s infinite;
     }
 
@@ -167,8 +170,8 @@
     .clock {
       font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
+      font-weight: 700;
+      color: #ffffff;
     }
 
     /* Main Dashboard Layout */
@@ -177,36 +180,36 @@
       grid-template-columns: 360px 1fr 380px;
       gap: 20px;
       padding: 24px;
-      height: calc(100vh - 72px);
+      height: calc(100vh - 76px);
     }
 
-    /* Glass Panels */
+    /* Glass White Panels */
     .panel {
       background: var(--panel-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-color);
+      border: 1.5px solid var(--border-color);
       border-radius: 24px;
       padding: 20px;
       display: flex;
       flex-direction: column;
       gap: 16px;
       overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(220, 38, 38, 0.08);
     }
 
     .panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1.5px solid #fecaca;
       padding-bottom: 12px;
     }
 
     .panel-title {
       font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 1px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: var(--accent-red);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -215,68 +218,71 @@
     /* Incident Feed Cards */
     .incident-card {
       background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
+      border: 1.5px solid #fecaca;
+      border-radius: 18px;
       padding: 16px;
       cursor: pointer;
       transition: all 0.25s ease;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     }
 
     .incident-card:hover {
-      border-color: rgba(255, 255, 255, 0.25);
+      border-color: var(--accent-red);
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 20px rgba(220, 38, 38, 0.15);
     }
 
     .incident-card.active {
-      border-color: var(--accent-coral);
-      background: rgba(239, 68, 68, 0.12);
+      border-color: var(--accent-red);
+      background: #fef2f2;
     }
 
     .incident-severity {
       display: inline-block;
-      padding: 3px 8px;
-      border-radius: 6px;
+      padding: 4px 10px;
+      border-radius: 8px;
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    .sev-critical { background: rgba(220, 38, 38, 0.25); color: #fca5a5; border: 1px solid var(--accent-red); }
-    .sev-high { background: rgba(245, 158, 11, 0.25); color: #facc15; border: 1px solid var(--accent-amber); }
-    .sev-medium { background: rgba(37, 99, 235, 0.25); color: #93c5fd; border: 1px solid var(--accent-cyan); }
+    .sev-critical { background: #fee2e2; color: var(--accent-crimson); border: 1.5px solid var(--accent-red); }
+    .sev-high { background: #fef3c7; color: #b45309; border: 1.5px solid var(--accent-amber); }
+    .sev-medium { background: #dbeafe; color: #1e40af; border: 1.5px solid var(--accent-cyan); }
 
     .incident-title {
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 900;
       margin: 8px 0 4px 0;
-      color: #fff;
+      color: var(--text-main);
     }
 
     .incident-desc {
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--text-muted);
       line-height: 1.4;
+      font-weight: 500;
     }
 
     .dept-pill {
       display: inline-block;
       margin-top: 8px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      background: rgba(255,255,255,0.08);
-      color: #cbd5e1;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 800;
+      background: #f1f5f9;
+      color: var(--accent-crimson);
+      border: 1px solid #cbd5e1;
     }
 
-    /* Radar Map View */
+    /* Modern Red GIS Radar Container */
     .radar-container {
-      background: rgba(10, 15, 28, 0.9);
-      border: 1px solid var(--border-color);
+      background: #ffffff;
+      border: 1.5px solid #fecaca;
       border-radius: 20px;
       height: 280px;
       position: relative;
@@ -284,6 +290,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: inset 0 0 20px rgba(220, 38, 38, 0.05);
     }
 
     .radar-grid {
@@ -292,8 +299,8 @@
       height: 100%;
       background-size: 40px 40px;
       background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        linear-gradient(to right, rgba(220, 38, 38, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(220, 38, 38, 0.1) 1px, transparent 1px);
     }
 
     .radar-sweep {
@@ -301,7 +308,7 @@
       width: 240px;
       height: 240px;
       border-radius: 50%;
-      border: 1px solid rgba(220, 38, 38, 0.3);
+      border: 1.5px solid rgba(220, 38, 38, 0.3);
     }
 
     .radar-sweep::after {
@@ -309,7 +316,7 @@
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       border-radius: 50%;
-      border: 2px solid transparent;
+      border: 2.5px solid transparent;
       border-top-color: var(--accent-red);
       animation: spin 4s linear infinite;
     }
@@ -320,11 +327,11 @@
 
     .incident-pin {
       position: absolute;
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: var(--accent-red);
-      box-shadow: 0 0 16px var(--accent-red);
+      box-shadow: 0 0 18px var(--accent-red);
       animation: pulse 1.2s infinite;
     }
 
@@ -337,80 +344,83 @@
     }
 
     .step-item {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
+      background: #ffffff;
+      border: 1.5px solid #fecaca;
+      border-radius: 16px;
       padding: 14px;
       display: flex;
       align-items: flex-start;
       gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
 
     .step-badge {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 13px;
+      font-weight: 900;
       flex-shrink: 0;
     }
 
-    .step-done { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
-    .step-active { background: rgba(239, 68, 68, 0.2); color: var(--accent-coral); border: 1px solid var(--accent-coral); }
-    .step-pending { background: rgba(148, 163, 184, 0.1); color: var(--text-muted); border: 1px solid var(--border-color); }
+    .step-done { background: #d1fae5; color: var(--accent-green); border: 1.5px solid var(--accent-green); }
+    .step-active { background: #fee2e2; color: var(--accent-red); border: 1.5px solid var(--accent-red); }
+    .step-pending { background: #f1f5f9; color: var(--text-muted); border: 1.5px solid #cbd5e1; }
 
     .step-info h4 {
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
+      font-size: 14.5px;
+      font-weight: 900;
+      color: var(--text-main);
     }
 
     .step-info p {
       font-size: 12px;
       color: var(--text-muted);
       margin-top: 2px;
+      font-weight: 600;
     }
 
     /* Agency Fleet Status Counters */
     .fleet-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
     }
 
     .fleet-box {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 12px;
+      background: #fef2f2;
+      border: 1.5px solid #fca5a5;
+      border-radius: 16px;
+      padding: 14px;
       text-align: center;
     }
 
     .fleet-num {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 900;
-      color: var(--accent-green);
+      color: var(--accent-red);
     }
 
     .fleet-label {
-      font-size: 10px;
-      color: var(--text-muted);
+      font-size: 10.5px;
+      color: var(--accent-crimson);
       text-transform: uppercase;
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
 
     /* Controls & Buttons */
     .btn {
-      background: linear-gradient(135deg, var(--accent-red), #991b1b);
+      background: var(--accent-red);
       color: white;
       border: none;
       border-radius: 14px;
       padding: 14px 20px;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 900;
       cursor: pointer;
       width: 100%;
       display: flex;
@@ -424,33 +434,40 @@
     .btn:hover {
       transform: translateY(-1px);
       box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45);
+      background: var(--accent-crimson);
     }
 
     .btn-secondary {
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid var(--border-color);
+      background: #fef2f2;
+      color: var(--accent-crimson);
+      border: 1.5px solid var(--accent-red);
       box-shadow: none;
     }
 
     .btn-secondary:hover {
-      border-color: rgba(255, 255, 255, 0.3);
+      background: #fee2e2;
     }
 
     textarea, select {
       width: 100%;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid var(--border-color);
+      background: #ffffff;
+      border: 1.5px solid #fca5a5;
       border-radius: 12px;
       padding: 12px;
-      color: white;
+      color: var(--text-main);
       font-size: 13px;
+      font-weight: 600;
       outline: none;
+    }
+
+    textarea:focus, select:focus {
+      border-color: var(--accent-red);
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Header with Department Selector -->
+  <!-- Top Header with Red & White Theme -->
   <header>
     <div class="brand">
       <div class="brand-logo">
@@ -483,14 +500,14 @@
   <!-- 3-Column Tactical Command Grid -->
   <main class="dashboard-grid">
 
-    <!-- Left Column: Active Incidents / Complaints Feed -->
+    <!-- Left Column: Active Incidents Feed -->
     <section class="panel">
       <div class="panel-header">
         <div class="panel-title">
-          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
           <span id="feedHeaderLabel">INCIDENT COMPLAINTS FEED</span>
         </div>
-        <span style="font-size: 12px; font-weight: 700; color: var(--accent-amber);" id="incidentCount">4 Active</span>
+        <span style="font-size: 12px; font-weight: 900; color: var(--accent-red);" id="incidentCount">4 Active</span>
       </div>
 
       <div id="incidentList" style="display: flex; flex-direction: column; gap: 12px;">
@@ -498,7 +515,7 @@
         <div class="incident-card active" data-category="fire" onclick="selectIncident('INC-FIRE-9021', 'Structural Fire & Evacuation Protocol', 'fire', 'critical', 'Fire Department #4')">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="incident-severity sev-critical">CRITICAL • FIRE</span>
-            <span style="font-size:11px; color:var(--text-muted);">2 mins ago</span>
+            <span style="font-size:11px; color:var(--text-muted); font-weight:bold;">2 mins ago</span>
           </div>
           <div class="incident-title">Structure Fire on 4th Floor</div>
           <div class="incident-desc">Commercial building electrical fire. Thick smoke reported. Engine #4 & Ladder #2 deployed.</div>
@@ -508,7 +525,7 @@
         <div class="incident-card" data-category="medical" onclick="selectIncident('INC-MED-9022', 'Cardiac & Critical Medical Response', 'medical', 'critical', 'Hospital Trauma ER')">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="incident-severity sev-critical">CRITICAL • MEDICAL</span>
-            <span style="font-size:11px; color:var(--text-muted);">5 mins ago</span>
+            <span style="font-size:11px; color:var(--text-muted); font-weight:bold;">5 mins ago</span>
           </div>
           <div class="incident-title">Cardiac Arrest Emergency</div>
           <div class="incident-desc">Citizen collapsed at central station. Unresponsive. ALS Ambulance #9 assigned with O2 bay alert.</div>
@@ -518,7 +535,7 @@
         <div class="incident-card" data-category="accident" onclick="selectIncident('INC-ACC-9023', 'Vehicle Crash & Extrication Protocol', 'accident', 'high', 'Ambulance & Fire Rescue')">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="incident-severity sev-high">HIGH • CRASH</span>
-            <span style="font-size:11px; color:var(--text-muted);">12 mins ago</span>
+            <span style="font-size:11px; color:var(--text-muted); font-weight:bold;">12 mins ago</span>
           </div>
           <div class="incident-title">Multi-Vehicle Highway Crash</div>
           <div class="incident-desc">Two sedans collided near Exit 14. Hydraulic extrication unit & traffic detour active.</div>
@@ -528,7 +545,7 @@
         <div class="incident-card" data-category="crime" onclick="selectIncident('INC-POL-9024', 'Active Threat Security Protocol', 'crime', 'critical', 'Police Command SWAT')">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span class="incident-severity sev-critical">CRITICAL • SECURITY</span>
-            <span style="font-size:11px; color:var(--text-muted);">18 mins ago</span>
+            <span style="font-size:11px; color:var(--text-muted); font-weight:bold;">18 mins ago</span>
           </div>
           <div class="incident-title">Active Threat Security Alarm</div>
           <div class="incident-desc">Silent priority alarm triggered. SWAT cruisers 102 & 104 locked onto perimeter.</div>
@@ -541,7 +558,7 @@
     <section class="panel">
       <div class="panel-header">
         <div class="panel-title">
-          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
           DEPARTMENT FLEET & GIS TACTICAL MAP
         </div>
       </div>
@@ -565,17 +582,17 @@
         <div class="incident-pin" style="top: 38%; left: 45%;"></div>
         <div class="incident-pin" style="top: 65%; left: 70%; background: var(--accent-amber); box-shadow: 0 0 16px var(--accent-amber);"></div>
         <div class="incident-pin" style="top: 25%; left: 78%; background: var(--accent-cyan); box-shadow: 0 0 16px var(--accent-cyan);"></div>
-        <div style="position: absolute; bottom: 12px; left: 16px; font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted);">
+        <div style="position: absolute; bottom: 12px; left: 16px; font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-weight:bold;">
           LAT: 37.7749 • LNG: -122.4194 • RADIUS: 5.0 KM
         </div>
       </div>
 
       <!-- Active Protocol Stepper -->
       <div style="margin-top: 6px;">
-        <h3 id="activeProtocolTitle" style="font-size: 15px; font-weight: 800; color: #fff;">
+        <h3 id="activeProtocolTitle" style="font-size: 16px; font-weight: 900; color: var(--text-main);">
           ACTIVE PROTOCOL: Structural Fire & Evacuation Protocol
         </h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;" id="activeProtocolSub">
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px; font-weight:bold;" id="activeProtocolSub">
           Incident ID: INC-FIRE-9021 • Dispatched Agency: Fire Department #4
         </p>
 
@@ -611,7 +628,7 @@
     <section class="panel">
       <div class="panel-header">
         <div class="panel-title">
-          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
           AGENCY CONTROL & COMPLAINT ACKNOWLEDGE
         </div>
       </div>
@@ -622,7 +639,7 @@
       </button>
 
       <div>
-        <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">SELECT EMERGENCY DISPATCH PROTOCOL</label>
+        <label style="font-size: 12px; font-weight: 800; color: var(--accent-crimson); display: block; margin-bottom: 6px;">SELECT EMERGENCY DISPATCH PROTOCOL</label>
         <select id="protocolSelect">
           <option value="structure_fire">Structural Fire & Evacuation Protocol</option>
           <option value="cardiac_arrest">Hospital ER & Trauma Medical Protocol</option>
@@ -637,23 +654,23 @@
         DISPATCH AGENCY UNITS NOW
       </button>
 
-      <hr style="border: none; border-top: 1px solid var(--border-color); margin: 4px 0;">
+      <hr style="border: none; border-top: 1.5px solid #fecaca; margin: 4px 0;">
 
       <div>
-        <label style="font-size: 12px; font-weight: 700; color: var(--accent-amber); display: block; margin-bottom: 6px;">
+        <label style="font-size: 12px; font-weight: 800; color: var(--accent-crimson); display: block; margin-bottom: 6px;">
           ✨ GEMINI AI DYNAMIC INCIDENT ANALYSIS
         </label>
         <textarea id="aiPrompt" rows="3" placeholder="Analyze unusual incident parameter or request additional agency backup..."></textarea>
       </div>
 
       <button class="btn btn-secondary" onclick="generateAiProtocol()">
-        <svg width="18" height="18" fill="var(--accent-amber)" viewBox="0 0 24 24"><path d="M12 2L9 9l-7 3 7 3 3 7 3-7 7-3-7-3z"/></svg>
+        <svg width="18" height="18" fill="var(--accent-red)" viewBox="0 0 24 24"><path d="M12 2L9 9l-7 3 7 3 3 7 3-7 7-3-7-3z"/></svg>
         GENERATE AGENCY BACKUP PROTOCOL
       </button>
 
-      <div id="aiOutput" style="display:none; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 12px; font-size: 12px; color: #fff;">
-        <strong>AI Agency Backup Strategy:</strong>
-        <ol style="margin-left: 16px; margin-top: 6px;" id="aiStepsList"></ol>
+      <div id="aiOutput" style="display:none; background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: 16px; padding: 14px; font-size: 12.5px; color: var(--text-main);">
+        <strong style="color: var(--accent-crimson);">AI Agency Backup Strategy:</strong>
+        <ol style="margin-left: 18px; margin-top: 6px; font-weight: 600;" id="aiStepsList"></ol>
       </div>
     </section>
 
