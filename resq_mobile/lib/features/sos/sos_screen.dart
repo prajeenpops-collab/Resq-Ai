@@ -4,6 +4,7 @@ import '../../core/theme.dart';
 import '../../services/location_service.dart';
 import '../../services/api_service.dart';
 import '../../services/protocol_service.dart';
+import '../dispatch/agency_dispatch_demo_screen.dart';
 import '../protocols/protocol_execution_screen.dart';
 import '../protocols/protocols_screen.dart';
 import '../report/report_screen.dart';
@@ -275,6 +276,26 @@ class _SosScreenState extends State<SosScreen> with TickerProviderStateMixin {
                   ),
                   icon: const Icon(Icons.record_voice_over_rounded, color: AppTheme.neonAlert),
                   label: const Text('REPORT WITH VOICE / PHOTO / TEXT'),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Agency Dispatch SMS Demo Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const AgencyDispatchDemoScreen()),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.cyberCyan,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  icon: const Icon(Icons.chat_bubble_rounded, size: 20),
+                  label: const Text(
+                    'AGENCY DISPATCH SMS SIMULATOR',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
                 ),
               ),
               const SizedBox(height: 32),

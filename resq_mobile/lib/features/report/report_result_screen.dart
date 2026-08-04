@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 import '../../models/emergency_report.dart';
+import '../dispatch/agency_dispatch_demo_screen.dart';
 import '../protocols/protocol_execution_screen.dart';
 import '../sos/sos_screen.dart';
 
@@ -170,6 +171,25 @@ class ReportResultScreen extends StatelessWidget {
                 },
                 icon: const Icon(Icons.bolt_rounded),
                 label: const Text('OPEN LIVE AUTOMATED PROTOCOL TRACKER'),
+              ),
+              const SizedBox(height: 12),
+
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => AgencyDispatchDemoScreen(
+                        initialCategory: report.category,
+                        initialText: report.aiSummary,
+                      ),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.cyberCyan,
+                ),
+                icon: const Icon(Icons.chat_rounded),
+                label: const Text('INSPECT OUTGOING DISPATCH SMS MESSAGES'),
               ),
               const SizedBox(height: 12),
 
