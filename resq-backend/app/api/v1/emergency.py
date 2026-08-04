@@ -4,9 +4,10 @@ import httpx
 
 from app.core.security import get_current_user
 from app.models.emergency import EmergencyReportCreate, EmergencyReportResponse, EmergencyReportUpdate
-from app.services import firestore_service, gemini_service, fcm_service
+from app.services import firestore_service, gemini_service, fcm_service, protocol_service
 
 router = APIRouter(prefix="/emergency", tags=["emergency"])
+
 
 
 async def _fetch_media_bytes(url: str) -> bytes:
@@ -54,6 +55,12 @@ async def submit_report(payload: EmergencyReportCreate, user: dict = Depends(get
 
     firestore_service.log_incident(report_id, "created", user["uid"])
     fcm_service.notify_dispatchers(report_id, ai_result["category"], ai_result["severity"])
+
+    # Auto-execute emergency response protocol workflow
+    try:
+        protocol_service.execute_protocol(report_id)
+    except Exception as e:
+        pass
 
     report = firestore_service.get_report(report_id)
     return EmergencyReportResponse(
