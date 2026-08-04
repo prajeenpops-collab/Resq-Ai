@@ -108,8 +108,11 @@ class _ReportScreenState extends State<ReportScreen> {
         lng: lng,
       );
 
-      // Auto-trigger automated protocol execution
-      final execution = await _protocolService.triggerProtocolExecution(reportId: report.reportId);
+      // Auto-trigger automated protocol execution with matched category
+      final execution = await _protocolService.triggerProtocolExecution(
+        reportId: report.reportId,
+        category: report.category,
+      );
 
       if (!mounted) return;
 
