@@ -345,14 +345,18 @@ class _SosScreenState extends State<SosScreen> with TickerProviderStateMixin {
     Color color,
     String categoryKey,
   ) {
+    final cardBg = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).brightness == Brightness.light ? const Color(0xFF111827) : Colors.white;
+
     return InkWell(
       onTap: () => _triggerSos(category: categoryKey, customText: 'Quick Protocol Triggered for $label Emergency'),
       borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.darkCard,
+          color: cardBg,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
+          border: Border.all(color: color.withValues(alpha: 0.4), width: 1.5),
+          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -368,10 +372,10 @@ class _SosScreenState extends State<SosScreen> with TickerProviderStateMixin {
             const SizedBox(height: 8),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: textColor,
               ),
             ),
           ],

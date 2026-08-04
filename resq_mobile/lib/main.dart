@@ -27,8 +27,8 @@ class ResQApp extends StatelessWidget {
       title: 'ResQ AI',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.dark,
+      darkTheme: AppTheme.light,
+      themeMode: ThemeMode.light,
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
