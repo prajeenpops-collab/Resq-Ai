@@ -209,7 +209,9 @@ class _SosScreenState extends State<SosScreen> with TickerProviderStateMixin {
               ScaleTransition(
                 scale: _pulseAnimation,
                 child: GestureDetector(
-                  onTap: () => _triggerSos(category: 'medical', customText: 'CRITICAL SOS BUTTON TRIGGERED'),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const ReportScreen()),
+                  ),
                   child: Container(
                     width: 210,
                     height: 210,
