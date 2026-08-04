@@ -218,18 +218,25 @@ class _SosScreenState extends State<SosScreen> with TickerProviderStateMixin {
                     height: 210,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: const RadialGradient(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                         colors: [
-                          Color(0xFFFF5252),
-                          Color(0xFFD32F2F),
-                          Color(0xFF880E4F),
+                          Color(0xFFFF334B),
+                          Color(0xFFDC2626),
+                          Color(0xFFB91C1C),
                         ],
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppTheme.criticalRed.withValues(alpha: 0.6),
-                          blurRadius: 40,
-                          spreadRadius: 10,
+                          color: const Color(0xFFEF4444).withValues(alpha: 0.45),
+                          blurRadius: 36,
+                          spreadRadius: 8,
+                        ),
+                        BoxShadow(
+                          color: const Color(0xFFDC2626).withValues(alpha: 0.25),
+                          blurRadius: 16,
+                          spreadRadius: 2,
                         ),
                       ],
                     ),
