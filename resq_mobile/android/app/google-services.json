@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "77506005514",
+    "project_id": "resqai-fc260",
+    "storage_bucket": "resqai-fc260.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77506005514:android:c238979c83f6f8ceea2df3",
+        "android_client_info": {
+          "package_name": "Resq.Ai21"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5qfxhvDIaKiLa3cUBa06FtIiYFwLaWi4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
